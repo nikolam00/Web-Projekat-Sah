@@ -20,7 +20,7 @@ namespace Web_Projekat_Sah.Controllers
         {
             Context = context;
         }
-        ///{Datum_rodjenja}
+    
         [Route("Unos kluba/{Naziv}/{Mesto}/{Broj_Telefona}")]
         [HttpPost]
         public async Task<ActionResult> Dodaj_klub(string Naziv, string Mesto, string Broj_Telefona)
@@ -34,6 +34,8 @@ namespace Web_Projekat_Sah.Controllers
             {
                 return BadRequest("Klub sa ovim imenom je vec osnovan!");
             }
+
+            // Da bi mogli da izvrismo kasnije brisanje ime kluba mora da bude jedinstveno
 
             if (Mesto == "") return BadRequest("Morate uneti mesto");
             if (Mesto.Length > 20) return BadRequest("Pogresna duzina mesto!");
@@ -66,7 +68,7 @@ namespace Web_Projekat_Sah.Controllers
         [HttpDelete]
         public async Task<ActionResult> Izbrisi_klub(string Naziv)
         {
-             if (Naziv == "") return BadRequest("Morate uneti ime kluba");
+            if (Naziv == "") return BadRequest("Morate uneti ime kluba");
             if (Naziv.Length > 50) return BadRequest("Pogresna duzina naziv!");
 
             try
@@ -89,6 +91,18 @@ namespace Web_Projekat_Sah.Controllers
             {
                 return BadRequest(e.Message);
             }
+        }
+
+        [Route("Pregledaj klub/{Naziv}")]
+        [HttpGet]
+        public ActionResult Vrati_igraca(string Naziv)
+        {
+            if (Naziv == "") return BadRequest("Morate uneti ime kluba");
+            if (Naziv.Length > 50) return BadRequest("Pogresna duzina naziv!");
+
+            var Klub = Context.Klubovi.Where(p=>p.Naziv.CompareTo(Naziv)==0).FirstOrDefault();
+
+            return Ok(Klub);
         }
     }
 }
