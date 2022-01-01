@@ -105,7 +105,7 @@ namespace Web_Projekat_Sah.Controllers
         {
             if (FideId < 0 || FideId > 999999) return BadRequest("Pogresna vrednost za FideId!");
 
-            var Igrac = Context.Igraci.Where(p => p.Fide == FideId).Include(p => p.Klub).ThenInclude(p=>p.Naziv).FirstOrDefault();
+            var Igrac = Context.Igraci.Where(p => p.Fide == FideId).FirstOrDefault();
 
             return Ok(Igrac);
         }
@@ -149,9 +149,35 @@ namespace Web_Projekat_Sah.Controllers
                 else
                     return BadRequest($"Klub {Naziv_klub} ne postoji u bazi!");
                 
-                Context.Klubovi.Update(pKlub);
+                Context.Igraci.Update(Igrac);
+                
+                // Da li ovde treba da se doda da se Update Klub?
+
                 await Context.SaveChangesAsync();
-                return Ok($"Izmenjeni podaci o klubu, izbrisan je igrac {Igrac.Ime} {Igrac.Prezime} iz kluba {Naziv_klub}!");
+                return Ok($"Izmenjeni podaci o igracu {Igrac.Ime} {Igrac.Prezime}, presao je u klub {Naziv_klub}!");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [Route("Promeni rejting /{FideId}")]
+        [HttpPut]
+        public async Task<ActionResult> PromeniRating(int FideId, int PromenaRejtinga)
+        {
+            if (FideId < 0 || FideId > 999999) return BadRequest("Pogresna vrednost za FideId!");
+            if (PromenaRejtinga<-200 || PromenaRejtinga>200) return BadRequest("Pogresna vrednost za promenu rejtinga!");
+
+             try
+            {
+                var Igrac = Context.Igraci.Where(p => p.Fide == FideId).FirstOrDefault();
+
+                Igrac.Rejting=Igrac.Rejting+PromenaRejtinga;
+
+                Context.Igraci.Update(Igrac);
+                await Context.SaveChangesAsync();
+                return Ok($"Izmenjeni podaci o igracu {Igrac.Ime} {Igrac.Prezime}, novi rejting igraca je {Igrac.Rejting}!");
             }
             catch (Exception e)
             {

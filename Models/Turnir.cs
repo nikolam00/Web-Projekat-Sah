@@ -24,20 +24,15 @@ namespace Models
         [Required]
         public DateTime Datum_pocetka { get; set; }
 
-
         [MaxLength(50)]
         [Required]
         public string Mesto { get; set; }
 
         [MaxLength(50)]
         [Required]
-        public string Nagrada{ get; set; }
+        public int Nagrada{ get; set; }
 
         [JsonIgnore]
-        [Required]
         public Igrac Pobednik { get; set; }
-
-
-
     }
 }

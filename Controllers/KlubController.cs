@@ -65,7 +65,6 @@ namespace Web_Projekat_Sah.Controllers
             }
         }
 
-
         [Route("Brisanje kluba/{Naziv}")]
         [HttpDelete]
         public async Task<ActionResult> Izbrisi_klub(string Naziv)
