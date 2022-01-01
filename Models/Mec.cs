@@ -6,6 +6,13 @@ using System;
 
 namespace Models
 {
+    public enum Rezultat
+    {
+        Pobeda_Beli=0,
+        Nereseno,
+        Pobeda_Crni
+    }
+
     [Table("Mec")]
     public class Mec
     {
@@ -21,10 +28,12 @@ namespace Models
 
         [JsonIgnore]
         [Required]
-        public Igrac Beli {get; set;}
+        public Igrac Beli { get; set; }
         
         [JsonIgnore]
         [Required]
-        public Igrac Crni {get; set;}
+        public Igrac Crni { get; set; }
+
+        public Rezultat Result { get; set; }
     }
 }

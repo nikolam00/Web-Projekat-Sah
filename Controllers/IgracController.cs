@@ -62,14 +62,12 @@ namespace Web_Projekat_Sah.Controllers
                 Context.Igraci.Add(player);
                 await Context.SaveChangesAsync();
                 return Ok($"Igrac {Ime} {Prezime} je dodat u bazu!");
-
             }
             catch (Exception e)
             {
                 return BadRequest(e.InnerException.Message);
             }
         }
-
 
         [Route("Brisanje igraca/{FideId}")]
         [HttpDelete]
@@ -107,9 +105,58 @@ namespace Web_Projekat_Sah.Controllers
         {
             if (FideId < 0 || FideId > 999999) return BadRequest("Pogresna vrednost za FideId!");
 
-            var Igrac = Context.Igraci.Where(p => p.Fide == FideId).Include(p => p.Klub).FirstOrDefault();
+            var Igrac = Context.Igraci.Where(p => p.Fide == FideId).Include(p => p.Klub).ThenInclude(p=>p.Naziv).FirstOrDefault();
 
             return Ok(Igrac);
+        }
+
+        [Route("Promeni klub /{FideId}/{Naziv_klub}")]
+        [HttpPut]
+        public async Task<ActionResult> Dodaj_igraca_u_klub(string Naziv_klub, int FideId)
+        {
+            if (FideId < 0 || FideId > 999999) return BadRequest("Pogresna vrednost za FideId!");
+            if (Naziv_klub == "") return BadRequest("Morate uneti ime kluba");
+            if (Naziv_klub.Length > 50) return BadRequest("Pogresna duzina naziv!");
+
+            try
+            {
+                var Igrac = Context.Igraci.Where(p => p.Fide == FideId).FirstOrDefault();
+                var pKlub = Context.Klubovi.Where(p => p.Naziv.CompareTo(Naziv_klub) == 0).FirstOrDefault();
+
+                if(pKlub!=null)
+                {
+                    if(Igrac!=null)
+                    {
+                        Igrac.Klub=pKlub;
+                        
+                        // Deo za dodavanje igraca u klub samo ako on nije vec u tom klubu
+
+                        int q=1;
+
+                        foreach(var I in pKlub.Igraci)
+                        {
+                            if(I.Fide==Igrac.Fide) q=0;
+                        }
+
+                        if(q==1)
+                        {
+                            pKlub.Igraci.Add(Igrac);
+                        }
+                    }
+                    else
+                        return BadRequest("Igrac ne postoji u bazi!");
+                }
+                else
+                    return BadRequest($"Klub {Naziv_klub} ne postoji u bazi!");
+                
+                Context.Klubovi.Update(pKlub);
+                await Context.SaveChangesAsync();
+                return Ok($"Izmenjeni podaci o klubu, izbrisan je igrac {Igrac.Ime} {Igrac.Prezime} iz kluba {Naziv_klub}!");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

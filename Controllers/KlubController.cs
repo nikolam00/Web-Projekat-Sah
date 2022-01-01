@@ -124,8 +124,43 @@ namespace Web_Projekat_Sah.Controllers
                 {
                     if(Igrac!=null)
                     {
+                        pKlub.Igraci.Remove(Igrac);   // Ovde javlja gresku!!!
+                    }
+                    else
+                        return BadRequest("Igrac ne postoji u bazi!");
+                }
+                else
+                    return BadRequest($"Klub {Naziv_klub} ne postoji u bazi!");
+                
+                Context.Klubovi.Update(pKlub);
+                await Context.SaveChangesAsync();
+                return Ok($"Izmenjeni podaci o klubu, izbrisan je igrac {Igrac.Ime} {Igrac.Prezime} iz kluba {Naziv_klub}!");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [Route("Izbrisi igraca iz kluba/{Naziv_klub}/{FideId}")]
+        [HttpPut]
+        public async Task<ActionResult> Izbrisi_igraca(string Naziv_klub, int FideId)
+        {
+            if (FideId < 0 || FideId > 999999) return BadRequest("Pogresna vrednost za FideId!");
+            if (Naziv_klub == "") return BadRequest("Morate uneti ime kluba");
+            if (Naziv_klub.Length > 50) return BadRequest("Pogresna duzina naziv!");
+
+            try
+            {
+                var Igrac = Context.Igraci.Where(p => p.Fide == FideId).FirstOrDefault();
+                var pKlub = Context.Klubovi.Where(p => p.Naziv.CompareTo(Naziv_klub) == 0).FirstOrDefault();
+
+                if(pKlub!=null)
+                {
+                    if(Igrac!=null)
+                    {
                         Igrac.Klub=pKlub;
-                        pKlub.Igraci.Add(Igrac);
+                        pKlub.Igraci.Add(Igrac);    // Ovde javlja gresku!!!
                     }
                     else
                         return BadRequest("Igrac ne postoji u bazi!");
