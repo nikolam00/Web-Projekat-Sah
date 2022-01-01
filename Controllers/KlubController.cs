@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System;
 using System.Linq;
 using Models;
+using System.Collections.Generic;
 
 
 namespace Web_Projekat_Sah.Controllers
@@ -20,7 +21,7 @@ namespace Web_Projekat_Sah.Controllers
         {
             Context = context;
         }
-    
+
         [Route("Unos kluba/{Naziv}/{Mesto}/{Broj_Telefona}")]
         [HttpPost]
         public async Task<ActionResult> Dodaj_klub(string Naziv, string Mesto, string Broj_Telefona)
@@ -28,9 +29,9 @@ namespace Web_Projekat_Sah.Controllers
             if (Naziv == "") return BadRequest("Morate uneti ime kluba");
             if (Naziv.Length > 50) return BadRequest("Pogresna duzina naziv!");
 
-            var Klub = Context.Klubovi.Where(p=>p.Naziv.CompareTo(Naziv)==0).FirstOrDefault();
+            var Klub = Context.Klubovi.Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();
 
-            if(Klub!=null)
+            if (Klub != null)
             {
                 return BadRequest("Klub sa ovim imenom je vec osnovan!");
             }
@@ -48,7 +49,8 @@ namespace Web_Projekat_Sah.Controllers
             Club.Naziv = Naziv;
             Club.Mesto = Mesto;
             Club.Broj_Telefona = Broj_Telefona;
-            Club.Broj_Igraca = 0;
+            Club.Broj_Igraca = Club.Igraci.Count;
+            Club.Igraci=new List<Igrac>(10);
 
             try
             {
@@ -73,9 +75,9 @@ namespace Web_Projekat_Sah.Controllers
 
             try
             {
-               var Klub = Context.Klubovi.Where(p=>p.Naziv.CompareTo(Naziv)==0).FirstOrDefault();
+                var Klub = Context.Klubovi.Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();
 
-                if(Klub!=null)
+                if (Klub != null)
                 {
                     Context.Klubovi.Remove(Klub);
                     await Context.SaveChangesAsync();
@@ -100,9 +102,46 @@ namespace Web_Projekat_Sah.Controllers
             if (Naziv == "") return BadRequest("Morate uneti ime kluba");
             if (Naziv.Length > 50) return BadRequest("Pogresna duzina naziv!");
 
-            var Klub = Context.Klubovi.Where(p=>p.Naziv.CompareTo(Naziv)==0).FirstOrDefault();
+            var Klub = Context.Klubovi.Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();
 
             return Ok(Klub);
+        }
+
+        [Route("Dodaj igraca u klub/{Naziv_klub}/{FideId}")]
+        [HttpPut]
+        public async Task<ActionResult> Dodaj_igraca_u_klub(string Naziv_klub, int FideId)
+        {
+            if (FideId < 0 || FideId > 999999) return BadRequest("Pogresna vrednost za FideId!");
+            if (Naziv_klub == "") return BadRequest("Morate uneti ime kluba");
+            if (Naziv_klub.Length > 50) return BadRequest("Pogresna duzina naziv!");
+
+            try
+            {
+                var Igrac = Context.Igraci.Where(p => p.Fide == FideId).FirstOrDefault();
+                var pKlub = Context.Klubovi.Where(p => p.Naziv.CompareTo(Naziv_klub) == 0).FirstOrDefault();
+
+                if(pKlub!=null)
+                {
+                    if(Igrac!=null)
+                    {
+                        Igrac.Klub=pKlub;
+                        pKlub.Igraci.Add(Igrac);
+                    }
+                    else
+                        return BadRequest("Igrac ne postoji u bazi!");
+                }
+                else
+                    return BadRequest($"Klub {Naziv_klub} ne postoji u bazi!");
+                
+                Context.Klubovi.Update(pKlub);
+                await Context.SaveChangesAsync();
+                return Ok($"Izmenjeni podaci o klubu, dodat je igrac {Igrac.Ime} {Igrac.Prezime} u klub {Naziv_klub}!");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
         }
     }
 }
