@@ -50,7 +50,7 @@ namespace Web_Projekat_Sah.Controllers
             Club.Mesto = Mesto;
             Club.Broj_Telefona = Broj_Telefona;
             Club.Broj_Igraca = Club.Igraci.Count;
-            Club.Igraci=new List<Igrac>(10);
+            Club.Igraci=new List<Igrac>();
 
             try
             {
@@ -101,12 +101,12 @@ namespace Web_Projekat_Sah.Controllers
             if (Naziv == "") return BadRequest("Morate uneti ime kluba");
             if (Naziv.Length > 50) return BadRequest("Pogresna duzina naziv!");
 
-            var Klub = Context.Klubovi.Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();
+            var Klub = Context.Klubovi.Include(p=>p.Igraci).Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();
 
             return Ok(Klub);
         }
 
-        [Route("Dodaj igraca u klub/{Naziv_klub}/{FideId}")]
+        [Route("Dodaj_igraca_u_klub/{Naziv_klub}/{FideId}")]
         [HttpPut]
         public async Task<ActionResult> Dodaj_igraca_u_klub(string Naziv_klub, int FideId)
         {
@@ -116,14 +116,16 @@ namespace Web_Projekat_Sah.Controllers
 
             try
             {
-                var Igrac = Context.Igraci.Where(p => p.Fide == FideId).FirstOrDefault();
-                var pKlub = Context.Klubovi.Where(p => p.Naziv.CompareTo(Naziv_klub) == 0).FirstOrDefault();
+                var Igrac = Context.Igraci.Include(p=>p.Klub).Where(p => p.Fide == FideId).FirstOrDefault();
+                var pKlub = Context.Klubovi.Include(p=>p.Igraci).Where(p => p.Naziv.CompareTo(Naziv_klub) == 0).FirstOrDefault();
 
                 if(pKlub!=null)
                 {
                     if(Igrac!=null)
                     {
-                        pKlub.Igraci.Remove(Igrac);   // Ovde javlja gresku!!!
+                        Igrac.Klub=pKlub;
+                        pKlub.Igraci.Add(Igrac);
+                        pKlub.Broj_Igraca++;  
                     }
                     else
                         return BadRequest("Igrac ne postoji u bazi!");
@@ -131,9 +133,10 @@ namespace Web_Projekat_Sah.Controllers
                 else
                     return BadRequest($"Klub {Naziv_klub} ne postoji u bazi!");
                 
+                Context.Igraci.Update(Igrac);
                 Context.Klubovi.Update(pKlub);
                 await Context.SaveChangesAsync();
-                return Ok($"Izmenjeni podaci o klubu, izbrisan je igrac {Igrac.Ime} {Igrac.Prezime} iz kluba {Naziv_klub}!");
+                return Ok($"Izmenjeni podaci o klubu, dodat je igrac {Igrac.Ime} {Igrac.Prezime}!");
             }
             catch (Exception e)
             {
@@ -158,8 +161,7 @@ namespace Web_Projekat_Sah.Controllers
                 {
                     if(Igrac!=null)
                     {
-                        Igrac.Klub=pKlub;
-                        pKlub.Igraci.Add(Igrac);    // Ovde javlja gresku!!!
+                        pKlub.Igraci.Remove(Igrac);    // Ovde javlja gresku!!!
                     }
                     else
                         return BadRequest("Igrac ne postoji u bazi!");

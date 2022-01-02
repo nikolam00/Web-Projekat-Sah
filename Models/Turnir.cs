@@ -32,8 +32,11 @@ namespace Models
         [Required]
         public int Nagrada { get; set; }
 
-        //[JsonIgnore]
+        [JsonIgnore]
         public List<Igrac> Prijavljeni_igraci { get; set; }
+
+        [JsonIgnore]
+        public List<Igrac> Ostali_igraci { get; set; }
 
         [JsonIgnore]
         public List<Mec> Mecevi { get; set; }
