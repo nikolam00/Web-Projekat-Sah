@@ -27,6 +27,5 @@ namespace Models
 
         [JsonIgnore]
         public List<Igrac> Igraci { get; set;}
-
     }
 }

@@ -30,9 +30,15 @@ namespace Models
 
         [MaxLength(50)]
         [Required]
-        public int Nagrada{ get; set; }
+        public int Nagrada { get; set; }
+
+        //[JsonIgnore]
+        public List<Igrac> Prijavljeni_igraci { get; set; }
 
         [JsonIgnore]
+        public List<Mec> Mecevi { get; set; }
+
+        //[JsonIgnore]
         public Igrac Pobednik { get; set; }
     }
 }

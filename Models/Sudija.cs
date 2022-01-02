@@ -26,6 +26,7 @@ namespace Models
         public string Prezime { get; set; }
 
         public Kategorija Kategorija { get; set; }
+        
         public List<Turnir> Sudjeni_turniri { get; set; }
 
     }
