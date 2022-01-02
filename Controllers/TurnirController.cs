@@ -130,24 +130,24 @@ namespace Web_Projekat_Sah.Controllers
 
             try
             {
-                var Igrac = Context.Igraci.Where(p => p.Fide == FideId).FirstOrDefault();
+                var Igrac = Context.Igraci.Include(p=>p.Klub).Where(p => p.Fide == FideId).FirstOrDefault();
                 var Turnir = Context.Turniri.Include(p=>p.Prijavljeni_igraci).Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();
-
+//                                          ---------------------------------
                 if(Turnir!=null)
                 {
                     if(Igrac!=null)
                     {
-                        //Turnir.Prijavljeni_igraci.Add(Igrac);   // Ovde javlja gresku!!!
+                        Turnir.Prijavljeni_igraci.Add(Igrac);   // Ovde javlja gresku!!!
+
+                        Context.Turniri.Update(Turnir);
+                        await Context.SaveChangesAsync();
+                        return Ok($"Izmenjeni podaci o turniru, u listu prijavljenih igraca dodat je igrac {Igrac.Ime} {Igrac.Prezime}!");
                     }
                     else
                         return BadRequest("Igrac ne postoji u bazi!");
                 }
                 else
                     return BadRequest($"Turnir {Naziv} ne postoji u bazi!");
-                
-                Context.Turniri.Update(Turnir);
-                await Context.SaveChangesAsync();
-                return Ok($"Izmenjeni podaci o turniru, u listu prijavljenih igraca dodat je igrac {Igrac.Ime} {Igrac.Prezime} iz kluba {Igrac.Klub.Naziv}!");
             }
             catch (Exception e)
             {
