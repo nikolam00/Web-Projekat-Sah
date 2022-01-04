@@ -105,7 +105,7 @@ namespace Web_Projekat_Sah.Controllers
         {
             if (FideId < 0 || FideId > 999999) return BadRequest("Pogresna vrednost za FideId!");
 
-            var Igrac = Context.Igraci.Include(p=>p.Klub).ThenInclude(p=>p.Naziv).Where(p => p.Fide == FideId).FirstOrDefault();
+            var Igrac = Context.Igraci.Include(p=>p.Klub).Where(p => p.Fide == FideId).FirstOrDefault();
 
             return Ok(Igrac);
         }

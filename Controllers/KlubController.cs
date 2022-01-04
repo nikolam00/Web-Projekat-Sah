@@ -22,6 +22,10 @@ namespace Web_Projekat_Sah.Controllers
             Context = context;
         }
 
+        //---------------------------------------------------------------------------------------------------------
+
+        //              POST METODE
+
         [Route("Unos kluba/{Naziv}/{Mesto}/{Broj_Telefona}")]
         [HttpPost]
         public async Task<ActionResult> Dodaj_klub(string Naziv, string Mesto, string Broj_Telefona)
@@ -65,6 +69,10 @@ namespace Web_Projekat_Sah.Controllers
             }
         }
 
+        //---------------------------------------------------------------------------------------------------------
+
+        //              DELETE METODE
+
         [Route("Brisanje kluba/{Naziv}")]
         [HttpDelete]
         public async Task<ActionResult> Izbrisi_klub(string Naziv)
@@ -94,9 +102,13 @@ namespace Web_Projekat_Sah.Controllers
             }
         }
 
+        //---------------------------------------------------------------------------------------------------------
+
+        //              GET METODE
+
         [Route("Pregledaj klub/{Naziv}")]
         [HttpGet]
-        public ActionResult Vrati_igraca(string Naziv)
+        public ActionResult Vrati_klub(string Naziv)
         {
             if (Naziv == "") return BadRequest("Morate uneti ime kluba");
             if (Naziv.Length > 50) return BadRequest("Pogresna duzina naziv!");
@@ -105,6 +117,22 @@ namespace Web_Projekat_Sah.Controllers
 
             return Ok(Klub);
         }
+
+        [Route("Igraci kluba/{Naziv}")]
+        [HttpGet]
+        public ActionResult Vrati_igrace(string Naziv)
+        {
+            if (Naziv == "") return BadRequest("Morate uneti ime kluba");
+            if (Naziv.Length > 50) return BadRequest("Pogresna duzina naziv!");
+
+            var Klub = Context.Klubovi.Include(p=>p.Igraci).Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();
+
+            return Ok(Klub.Igraci.ToList());
+        }
+
+        //---------------------------------------------------------------------------------------------------------
+
+        //              PUT METODE
 
         [Route("Dodaj_igraca_u_klub/{Naziv_klub}/{FideId}")]
         [HttpPut]

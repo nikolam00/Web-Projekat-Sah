@@ -22,18 +22,20 @@ namespace Web_Projekat_Sah.Controllers
             Context = context;
         }
 
-    //-----------------------------------------------------------------------------------------------------------------
+        //---------------------------------------------------------------------------------------------------------
+
+        //              POST METODE
 
         [Route("Unos turnira/{Naziv}/{Mesto}/{Broj_Telefona}")]
         [HttpPost]
-        public async Task<ActionResult> Dodaj_turnir(string Naziv, string Klub_organizator,DateTime Pocetak, string Mesto, int Nagrada)
+        public async Task<ActionResult> Dodaj_turnir(string Naziv, string Klub_organizator, DateTime Pocetak, string Mesto, int Nagrada)
         {
             if (Naziv == "") return BadRequest("Morate uneti ime turnira");
             if (Naziv.Length > 50) return BadRequest("Pogresna duzina naziv!");
 
-            var Turnir=Context.Turniri.Where(p=>p.Naziv.CompareTo(Naziv)==0).FirstOrDefault();
+            var Turnir = Context.Turniri.Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();
 
-            if(Turnir!=null)
+            if (Turnir != null)
             {
                 return BadRequest("Turnir sa ovim imenom vec postoji u bazi!");
             }
@@ -53,14 +55,14 @@ namespace Web_Projekat_Sah.Controllers
             Turnir Tournament = new Turnir();
 
             Tournament.Naziv = Naziv;
-            Tournament.Klub_organizator=Klub;
+            Tournament.Klub_organizator = Klub;
             Tournament.Mesto = Mesto;
-            Tournament.Datum_pocetka=Pocetak;
-            Tournament.Nagrada=Nagrada;
-            Tournament.Mecevi=new List<Mec>();
-            Tournament.Prijavljeni_igraci=new List<Igrac>();
-            Tournament.Pobednik=null;
-            
+            Tournament.Datum_pocetka = Pocetak;
+            Tournament.Nagrada = Nagrada;
+            Tournament.Mecevi = new List<Mec>();
+            Tournament.Prijavljeni_igraci = new List<Igrac>();
+            Tournament.Pobednik = null;
+
             try
             {
                 Context.Turniri.Add(Tournament);
@@ -73,7 +75,9 @@ namespace Web_Projekat_Sah.Controllers
             }
         }
 
-    //-----------------------------------------------------------------------------------------------------------------
+        //---------------------------------------------------------------------------------------------------------
+
+        //              GET METODE
 
         [Route("Pregledaj turnir /{Naziv}")]
         [HttpGet]
@@ -87,7 +91,48 @@ namespace Web_Projekat_Sah.Controllers
             return Ok(Turnir);
         }
 
-    //-----------------------------------------------------------------------------------------------------------------
+        [Route("Prijavljeni igraci  /{Naziv}")]
+        [HttpGet]
+        public ActionResult Prijavljeni_igraci(string Naziv)
+        {
+            if (Naziv == "") return BadRequest("Morate uneti ime turnira!");
+            if (Naziv.Length > 50) return BadRequest("Pogresna duzina naziv!");
+
+            /*var Turnir = Context.Turniri
+            .Include(p=>p.Prijavljeni_igraci).ThenInclude(p=>p.IgracID)
+            .Include(p=>p.Prijavljeni_igraci).ThenInclude(p=>p.Ime)
+            .Include(p=>p.Prijavljeni_igraci).ThenInclude(p=>p.Prezime)
+            .Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();*/
+
+            var Turnir=Context.Turniri.Include(p=>p.Prijavljeni_igraci).Where(p=>p.Naziv.CompareTo(Naziv)==0).FirstOrDefault();
+
+            return Ok(Turnir.Prijavljeni_igraci.ToList());
+        }
+
+        [Route("Pogledaj kolo /{Naziv}/{BrKola}")]
+        [HttpGet]
+        public ActionResult Vrati_kolo(string Naziv,int BrKola)
+        {
+            if (Naziv == "") return BadRequest("Morate uneti ime turnira!");
+            if (Naziv.Length > 50) return BadRequest("Pogresna duzina naziv!");
+
+            /*var Turnir = Context.Turniri
+            .Include(p=>p.Prijavljeni_igraci).ThenInclude(p=>p.IgracID)
+            .Include(p=>p.Prijavljeni_igraci).ThenInclude(p=>p.Ime)
+            .Include(p=>p.Prijavljeni_igraci).ThenInclude(p=>p.Prezime)
+            .Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();*/
+
+            //var Kolo_mecevi=Context.Mecevi.Include(p=>p.Turnir).Where(p=>p.Turnir.Naziv.CompareTo(Naziv)==0).Select(p=>p.Kolo==BrKola);
+
+            var Kolo_mecevi=Context.Mecevi.Include(p=>p.Turnir).Where(p=>p.Kolo==BrKola).Select(p=>p.Turnir.Naziv.CompareTo(Naziv)==0);
+
+            return Ok(Kolo_mecevi      );
+        }
+
+
+        //---------------------------------------------------------------------------------------------------------
+
+        //              DELETE METODE
 
         [Route("Brisanje turnira/{Naziv}")]
         [HttpDelete]
@@ -118,7 +163,9 @@ namespace Web_Projekat_Sah.Controllers
             }
         }
 
-    //-----------------------------------------------------------------------------------------------------------------
+        //---------------------------------------------------------------------------------------------------------
+
+        //              PUT METODE
 
         [Route("Upisi_igraca/{Naziv}/{FideId}")]
         [HttpPut]
@@ -130,12 +177,12 @@ namespace Web_Projekat_Sah.Controllers
 
             try
             {
-                var Igrac = Context.Igraci.Include(p=>p.Klub).Where(p => p.Fide == FideId).FirstOrDefault();
-                var Turnir = Context.Turniri.Include(p=>p.Prijavljeni_igraci).Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();
-//                                          ---------------------------------
-                if(Turnir!=null)
+                var Igrac = Context.Igraci.Include(p => p.Klub).Where(p => p.Fide == FideId).FirstOrDefault();
+                var Turnir = Context.Turniri.Include(p => p.Prijavljeni_igraci).Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();
+                //                                          ---------------------------------
+                if (Turnir != null)
                 {
-                    if(Igrac!=null)
+                    if (Igrac != null)
                     {
                         Turnir.Prijavljeni_igraci.Add(Igrac);   // Ovde javlja gresku!!!
 
@@ -154,47 +201,46 @@ namespace Web_Projekat_Sah.Controllers
                 return BadRequest(e.Message);
             }
         }
-        
-    //-----------------------------------------------------------------------------------------------------------------
 
         [Route("Kreiraj kolo/{Naziv}/{brKola}")]
         [HttpPut]
-        public async Task<ActionResult> Kreiraj_kolo(string Naziv,int brKola)
+        public async Task<ActionResult> Kreiraj_kolo(string Naziv, int brKola)
         {
             if (Naziv == "") return BadRequest("Morate uneti ime turnira");
             if (Naziv.Length > 50) return BadRequest("Pogresna duzina naziv!");
 
             try
             {
-                var Turnir=Context.Turniri.Include(p=>p.Mecevi).Include(p=>p.Prijavljeni_igraci).Include(p=>p.Ostali_igraci).Where(p=>p.Naziv.CompareTo(Naziv)==0).FirstOrDefault();
+                var Turnir = Context.Turniri.Include(p => p.Mecevi).Include(p => p.Prijavljeni_igraci).Include(p => p.Ostali_igraci).Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();
 
-                if(Turnir!=null)
+                if (Turnir != null)
                 {
-                    if(brKola==1)
+                    if (brKola == 1)
                     {
-                        Turnir.Ostali_igraci=Turnir.Prijavljeni_igraci;
+                        Turnir.Ostali_igraci = Turnir.Prijavljeni_igraci;
                     }
 
                     Turnir.Mecevi.Clear();      // Svaki put kada kreiramo kolo, prethodni mecevi sa tog turnira se brisu
 
-                    int BrUcesnika=Turnir.Ostali_igraci.Count;
+                    int BrUcesnika = Turnir.Ostali_igraci.Count;
 
-                    int i=0;
+                    int i = 0;
 
-                    for(int j=0;j<BrUcesnika/2;j++)
+                    for (int j = 0; j < BrUcesnika / 2; j++)
                     {
-                        Mec Par=new Mec();
+                        Mec Par = new Mec();
 
-                        Par.Kolo=brKola;                        
-                        Par.Beli=Turnir.Ostali_igraci[i++];
-                        Par.Crni=Turnir.Ostali_igraci[i++];
+                        Par.Kolo = brKola;
+                        Par.Beli = Turnir.Ostali_igraci[i++];
+                        Par.Crni = Turnir.Ostali_igraci[i++];
 
                         Turnir.Mecevi.Add(Par);
+                        Context.Mecevi.Add(Par);
                     }
                 }
                 else
                     return BadRequest($"Turnir {Naziv} ne postoji u bazi!");
-                
+
                 Context.Turniri.Update(Turnir);
                 await Context.SaveChangesAsync();
                 return Ok($"Izmenjeni podaci o turniru, dodati mecevi za Kolo {brKola}!");
@@ -205,69 +251,42 @@ namespace Web_Projekat_Sah.Controllers
             }
         }
 
-    //-----------------------------------------------------------------------------------------------------------------
-
-        /*[Route("Upisi rezultat /{FideId_Beli}/{FideId_Crni}/{Rezultat}")]
-        [HttpPut]
-        public async Task<ActionResult> Upisi_rezultat(int FideId_Beli,int FideId_Crni, Rezultat Rezultat)
-        {
-            if (FideId_Beli < 0 || FideId_Beli > 999999) return BadRequest("Pogresan FideId_Beli!");
-            if (FideId_Crni < 0 || FideId_Crni > 999999) return BadRequest("Pogresan FideId_Crni!");
-
-            try
-            {
-                var Mec = Context.Mecevi.Where(p => p.Beli.Fide == FideId_Beli && p.Crni.Fide==FideId_Crni).FirstOrDefault();
-
-                Mec.Result=Rezultat;
-
-                Context.Mecevi.Update(Mec);
-                await Context.SaveChangesAsync();
-                return Ok($"Izmenjeni podaci o mecu!");
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }*/
-
-    //-----------------------------------------------------------------------------------------------------------------    
-        
         [Route("Upisi rezultate kola/{Naziv}/{brKola}")]
         [HttpPut]
-        public async Task<ActionResult> Rezultati_kolo(string Naziv,int brKola,[FromQuery]int[] rezultati)
+        public async Task<ActionResult> Rezultati_kolo(string Naziv, int brKola, [FromQuery] int[] rezultati)
         {
             if (Naziv == "") return BadRequest("Morate uneti ime turnira");
             if (Naziv.Length > 50) return BadRequest("Pogresna duzina naziv!");
 
             try
             {
-                var Turnir=Context.Turniri.Include(p=>p.Mecevi).Include(p=>p.Ostali_igraci).Where(p=>p.Naziv.CompareTo(Naziv)==0).FirstOrDefault();
+                var Turnir = Context.Turniri.Include(p => p.Mecevi).Include(p => p.Ostali_igraci).Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();
 
-                if(Turnir!=null)
+                if (Turnir != null)
                 {
-                    int i=0;
+                    int i = 0;
 
-                    foreach(Mec M in Turnir.Mecevi)
+                    foreach (Mec M in Turnir.Mecevi)
                     {
-                        M.Result=(Rezultat)rezultati[i];
+                        M.Result = (Rezultat)rezultati[i];
 
-                        if(M.Result==Rezultat.Pobeda_Beli)
+                        if (M.Result == Rezultat.Pobeda_Beli)
                         {
-                            var igrac=Context.Igraci.Where(p=>p.Fide==M.Crni.Fide).FirstOrDefault();
+                            var igrac = Context.Igraci.Where(p => p.Fide == M.Crni.Fide).FirstOrDefault();
                             Turnir.Ostali_igraci.Remove(igrac);
                         }
                         else
                         {
-                            var igrac=Context.Igraci.Where(p=>p.Fide==M.Beli.Fide).FirstOrDefault();
+                            var igrac = Context.Igraci.Where(p => p.Fide == M.Beli.Fide).FirstOrDefault();
                             Turnir.Ostali_igraci.Remove(igrac);
                         }
 
-                        Context.Mecevi.Add(M);
-                    }   
+                        Context.Mecevi.Update(M);
+                    }
                 }
                 else
                     return BadRequest($"Turnir {Naziv} ne postoji u bazi!");
-                
+
                 Context.Turniri.Update(Turnir);
                 await Context.SaveChangesAsync();
                 return Ok($"Izmenjeni podaci o turniru, dodati mecevi za Kolo {brKola}!");
@@ -276,10 +295,10 @@ namespace Web_Projekat_Sah.Controllers
             {
                 return BadRequest(e.Message);
             }
-        }  
+        }
 
         [Route("Proglasi pobednika/{Naziv}")]
-        [HttpPut]
+        [HttpPut]        
         public async Task<ActionResult> Proglasi_pobednika(string Naziv)
         {
             if (Naziv == "") return BadRequest("Morate uneti ime turnira");
@@ -287,37 +306,37 @@ namespace Web_Projekat_Sah.Controllers
 
             try
             {
-                var Turnir=Context.Turniri.Include(p=>p.Ostali_igraci).Where(p=>p.Naziv.CompareTo(Naziv)==0).FirstOrDefault();
+                var Turnir = Context.Turniri.Include(p => p.Ostali_igraci).Include(p=>p.Pobednik).Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();
 
-                if(Turnir!=null)
+                if (Turnir != null)
                 {
-                    if(Turnir.Ostali_igraci.Count==1)
+                    if (Turnir.Ostali_igraci.Count == 1)
                     {
-                        Turnir.Pobednik=Turnir.Ostali_igraci[0];
+                        Turnir.Pobednik = Turnir.Ostali_igraci[0];
 
-                        var Igrac=Turnir.Ostali_igraci[0];
-                        Igrac.Rejting=Igrac.Rejting+Turnir.Nagrada;
+                        var Igrac = Turnir.Ostali_igraci[0];
+                        Igrac.Rejting = Igrac.Rejting + Turnir.Nagrada;
 
                         Context.Igraci.Update(Igrac);
                         await Context.SaveChangesAsync();
                         Context.Turniri.Update(Turnir);
                         await Context.SaveChangesAsync();
-                        
+
                         return Ok($"Izmenjeni podaci o turniru, pobednik turnira {Naziv} je {Igrac.Ime} {Igrac.Prezime}!");
-                    }  
+                    }
                     else
-                        return BadRequest("Nije vreme za proglasenje pobednika jos uvek, nije ostao samo jedan igrac!"); 
+                        return BadRequest("Nije vreme za proglasenje pobednika jos uvek, nije ostao samo jedan igrac!");
                 }
                 else
                     return BadRequest($"Turnir {Naziv} ne postoji u bazi!");
-                
-               
-               
+
+
+
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
-        }  
+        }
     }
 }
