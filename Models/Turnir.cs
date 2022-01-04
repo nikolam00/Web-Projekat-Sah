@@ -41,7 +41,10 @@ namespace Models
         [JsonIgnore]
         public List<Mec> Mecevi { get; set; }
 
-        //[JsonIgnore]
+        [JsonIgnore]
         public Igrac Pobednik { get; set; }
+
+        [JsonIgnore]
+        public Sudija Sudija { get; set; }
     }
 }

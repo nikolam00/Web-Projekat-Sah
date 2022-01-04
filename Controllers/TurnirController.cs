@@ -26,9 +26,9 @@ namespace Web_Projekat_Sah.Controllers
 
         //              POST METODE
 
-        [Route("Unos turnira/{Naziv}/{Mesto}/{Broj_Telefona}")]
+        [Route("Unos turnira/{Naziv}/{Klub_organizator}/{Mesto}/{Broj_Telefona}/{Sudija_ID}")]
         [HttpPost]
-        public async Task<ActionResult> Dodaj_turnir(string Naziv, string Klub_organizator, DateTime Pocetak, string Mesto, int Nagrada)
+        public async Task<ActionResult> Dodaj_turnir(string Naziv, string Klub_organizator, int Sudija_ID, DateTime Pocetak, string Mesto, int Nagrada)
         {
             if (Naziv == "") return BadRequest("Morate uneti ime turnira");
             if (Naziv.Length > 50) return BadRequest("Pogresna duzina naziv!");
@@ -47,6 +47,18 @@ namespace Web_Projekat_Sah.Controllers
                 return BadRequest("Klub sa ovim imenom ne postoji!");
             }
 
+            var Arbitar=Context.Sudije.Include(p=>p.Sudjeni_turniri).Where(p=>p.SudijaID==Sudija_ID).FirstOrDefault();
+
+            if (Arbitar == null)
+            {
+                return BadRequest("Sudija sa ovim Id ne postoji!");
+            }
+
+            // Ne moze ovde da prodje javlja gresku da je null za arbitra
+
+            //Arbitar.Sudjeni_turniri.Add(Turnir);
+            //Context.Sudije.Update(Arbitar);
+            
             // Da bi mogli da izvrismo kasnije brisanje ime turnira mora da bude jedinstveno
 
             if (Mesto == "") return BadRequest("Morate uneti mesto");
@@ -56,6 +68,7 @@ namespace Web_Projekat_Sah.Controllers
 
             Tournament.Naziv = Naziv;
             Tournament.Klub_organizator = Klub;
+            Tournament.Sudija=Arbitar;
             Tournament.Mesto = Mesto;
             Tournament.Datum_pocetka = Pocetak;
             Tournament.Nagrada = Nagrada;
@@ -79,7 +92,7 @@ namespace Web_Projekat_Sah.Controllers
 
         //              GET METODE
 
-        [Route("Pregledaj turnir /{Naziv}")]
+        [Route("Pregledaj turnir/{Naziv}")]
         [HttpGet]
         public ActionResult Vrati_turnir(string Naziv)
         {
@@ -91,7 +104,7 @@ namespace Web_Projekat_Sah.Controllers
             return Ok(Turnir);
         }
 
-        [Route("Prijavljeni igraci  /{Naziv}")]
+        [Route("Prijavljeni igraci/{Naziv}")]
         [HttpGet]
         public ActionResult Prijavljeni_igraci(string Naziv)
         {
@@ -109,7 +122,7 @@ namespace Web_Projekat_Sah.Controllers
             return Ok(Turnir.Prijavljeni_igraci.ToList());
         }
 
-        [Route("Pogledaj kolo /{Naziv}/{BrKola}")]
+        [Route("Pogledaj kolo/{Naziv}/{BrKola}")]
         [HttpGet]
         public ActionResult Vrati_kolo(string Naziv,int BrKola)
         {
@@ -128,7 +141,6 @@ namespace Web_Projekat_Sah.Controllers
 
             return Ok(Kolo_mecevi      );
         }
-
 
         //---------------------------------------------------------------------------------------------------------
 

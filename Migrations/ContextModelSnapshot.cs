@@ -252,13 +252,15 @@ namespace Web_Projekat_Sah.Migrations
                         .WithMany()
                         .HasForeignKey("PobednikIgracID");
 
-                    b.HasOne("Models.Sudija", null)
+                    b.HasOne("Models.Sudija", "Sudija")
                         .WithMany("Sudjeni_turniri")
                         .HasForeignKey("SudijaID");
 
                     b.Navigation("Klub_organizator");
 
                     b.Navigation("Pobednik");
+
+                    b.Navigation("Sudija");
                 });
 
             modelBuilder.Entity("Models.Klub", b =>

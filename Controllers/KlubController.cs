@@ -134,7 +134,7 @@ namespace Web_Projekat_Sah.Controllers
 
         //              PUT METODE
 
-        [Route("Dodaj_igraca_u_klub/{Naziv_klub}/{FideId}")]
+        [Route("Dodaj igraca u klub/{Naziv_klub}/{FideId}")]
         [HttpPut]
         public async Task<ActionResult> Dodaj_igraca_u_klub(string Naziv_klub, int FideId)
         {
