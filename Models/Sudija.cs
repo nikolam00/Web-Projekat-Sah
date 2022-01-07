@@ -27,6 +27,7 @@ namespace Models
 
         public Kategorija Kategorija { get; set; }
         
+        [JsonIgnore]
         public List<Turnir> Sudjeni_turniri { get; set; }
 
     }

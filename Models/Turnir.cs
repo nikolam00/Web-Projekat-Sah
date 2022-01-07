@@ -17,7 +17,6 @@ namespace Models
         [Required]
         public string Naziv { get; set; }
 
-        [JsonIgnore]
         [Required]
         public Klub Klub_organizator { get; set; }
 
@@ -41,10 +40,8 @@ namespace Models
         [JsonIgnore]
         public List<Mec> Mecevi { get; set; }
 
-        [JsonIgnore]
         public Igrac Pobednik { get; set; }
-
-        [JsonIgnore]
+        
         public Sudija Sudija { get; set; }
     }
 }

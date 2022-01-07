@@ -25,12 +25,10 @@ namespace Models
 
         [Required]
         public int Kolo { get; set; }
-
-        [JsonIgnore]
+        
         [Required]
         public Igrac Beli { get; set; }
         
-        [JsonIgnore]
         [Required]
         public Igrac Crni { get; set; }
 

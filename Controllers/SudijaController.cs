@@ -26,7 +26,7 @@ namespace Web_Projekat_Sah.Controllers
 
         //              POST METODE
 
-        [Route("Unos sudije/{Ime}/{Prezime}")]
+        [Route("Unos_sudije/{Ime}/{Prezime}")]
         [HttpPost]
         public async Task<ActionResult> Dodaj_sudija(string Ime, string Prezime, Kategorija category)
         {
@@ -59,7 +59,7 @@ namespace Web_Projekat_Sah.Controllers
 
         //              GET METODE
 
-        [Route("Pregledaj sudiju/{Ime}/{Prezime}")]
+        [Route("Pregledaj_sudiju/{Ime}/{Prezime}")]
         [HttpGet]
         public ActionResult Vrati_sudiju(string Ime, string Prezime)
         {
@@ -69,7 +69,12 @@ namespace Web_Projekat_Sah.Controllers
             if (Prezime == "") return BadRequest("Morate uneti prezime sudije");
             if (Prezime.Length > 20) return BadRequest("Pogresna duzina!");
 
-            var Sudija = Context.Sudije.Where(p => p.Ime.CompareTo(Ime) == 0 && p.Prezime.CompareTo(Prezime) == 0).FirstOrDefault();
+            var Sudija = Context.Sudije
+                        .Include(p=>p.Sudjeni_turniri)
+                        .ThenInclude(p=>p.Klub_organizator)
+                        .Include(p=>p.Sudjeni_turniri)
+                        .ThenInclude(p=>p.Pobednik)
+                        .Where(p => p.Ime.CompareTo(Ime) == 0 && p.Prezime.CompareTo(Prezime) == 0).FirstOrDefault();
 
             return Ok(Sudija);
         }
@@ -83,7 +88,7 @@ namespace Web_Projekat_Sah.Controllers
             return Ok(arbitri.ToList());
         }
 
-        [Route("Pogledaj sudjene turnire/{Ime}/{Prezime}")]
+        [Route("Pogledaj_sudjene_turnire/{Ime}/{Prezime}")]
         [HttpGet]
         public ActionResult Sudjeni_turniri(string Ime, string Prezime)
         {
@@ -102,7 +107,7 @@ namespace Web_Projekat_Sah.Controllers
 
         //              DELETE METODE
 
-        [Route("Brisanje sudije/{FideId}")]
+        [Route("Brisanje_sudije/{FideId}")]
         [HttpDelete]
         public async Task<ActionResult> Izbrisi_sudiju(string Ime, string Prezime)
         {

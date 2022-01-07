@@ -43,8 +43,7 @@ namespace Models
         [Required]
         public Titula Titula { get; set; }
 
-        [JsonIgnore]
         [Required]
-        public Klub Klub { get; set; }
+        public virtual Klub Klub { get; set; }
     }
 }

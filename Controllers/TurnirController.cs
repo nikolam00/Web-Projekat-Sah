@@ -26,7 +26,7 @@ namespace Web_Projekat_Sah.Controllers
 
         //              POST METODE
 
-        [Route("Unos turnira/{Naziv}/{Klub_organizator}/{Mesto}/{Broj_Telefona}/{Sudija_ID}")]
+        [Route("Unos_turnira/{Naziv}/{Klub_organizator}/{Mesto}/{Broj_Telefona}/{Sudija_ID}")]
         [HttpPost]
         public async Task<ActionResult> Dodaj_turnir(string Naziv, string Klub_organizator, int Sudija_ID, DateTime Pocetak, string Mesto, int Nagrada)
         {
@@ -47,7 +47,7 @@ namespace Web_Projekat_Sah.Controllers
                 return BadRequest("Klub sa ovim imenom ne postoji!");
             }
 
-            var Arbitar=Context.Sudije.Include(p=>p.Sudjeni_turniri).Where(p=>p.SudijaID==Sudija_ID).FirstOrDefault();
+            var Arbitar=Context.Sudije.Where(p=>p.SudijaID==Sudija_ID).FirstOrDefault();
 
             if (Arbitar == null)
             {
@@ -92,54 +92,54 @@ namespace Web_Projekat_Sah.Controllers
 
         //              GET METODE
 
-        [Route("Pregledaj turnir/{Naziv}")]
+        [Route("Pregledaj_turnir/{Naziv}")]
         [HttpGet]
         public ActionResult Vrati_turnir(string Naziv)
         {
             if (Naziv == "") return BadRequest("Morate uneti ime turnira!");
             if (Naziv.Length > 50) return BadRequest("Pogresna duzina naziv!");
 
-            var Turnir = Context.Turniri.Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();
+            var Turnir = Context.Turniri
+            .Include(p=>p.Klub_organizator)
+            .Include(p=>p.Sudija)
+            .Include(p=>p.Pobednik)
+            .Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();
 
             return Ok(Turnir);
         }
 
-        [Route("Prijavljeni igraci/{Naziv}")]
+        [Route("Prijavljeni_igraci/{Naziv}")]
         [HttpGet]
         public ActionResult Prijavljeni_igraci(string Naziv)
         {
             if (Naziv == "") return BadRequest("Morate uneti ime turnira!");
             if (Naziv.Length > 50) return BadRequest("Pogresna duzina naziv!");
 
-            /*var Turnir = Context.Turniri
-            .Include(p=>p.Prijavljeni_igraci).ThenInclude(p=>p.IgracID)
-            .Include(p=>p.Prijavljeni_igraci).ThenInclude(p=>p.Ime)
-            .Include(p=>p.Prijavljeni_igraci).ThenInclude(p=>p.Prezime)
-            .Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();*/
-
-            var Turnir=Context.Turniri.Include(p=>p.Prijavljeni_igraci).Where(p=>p.Naziv.CompareTo(Naziv)==0).FirstOrDefault();
+            var Turnir=Context.Turniri
+            .Include(p=>p.Prijavljeni_igraci)
+            .ThenInclude(p=>p.Klub)
+            .Where(p=>p.Naziv.CompareTo(Naziv)==0).FirstOrDefault();
 
             return Ok(Turnir.Prijavljeni_igraci.ToList());
         }
 
-        [Route("Pogledaj kolo/{Naziv}/{BrKola}")]
+        [Route("Pogledaj_kolo/{Naziv}/{BrKola}")]
         [HttpGet]
         public ActionResult Vrati_kolo(string Naziv,int BrKola)
         {
             if (Naziv == "") return BadRequest("Morate uneti ime turnira!");
             if (Naziv.Length > 50) return BadRequest("Pogresna duzina naziv!");
 
-            /*var Turnir = Context.Turniri
-            .Include(p=>p.Prijavljeni_igraci).ThenInclude(p=>p.IgracID)
-            .Include(p=>p.Prijavljeni_igraci).ThenInclude(p=>p.Ime)
-            .Include(p=>p.Prijavljeni_igraci).ThenInclude(p=>p.Prezime)
-            .Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();*/
+            var Kolo_mecevi=Context.Mecevi
+            .Include(p=>p.Beli)
+            .ThenInclude(p=>p.Klub)
+            .Include(p=>p.Crni)
+            .ThenInclude(p=>p.Klub)
+            .Include(p=>p.Turnir)
+            .ThenInclude(p=>p.Sudija)
+            .Where(p=>p.Kolo==BrKola && p.Turnir.Naziv.CompareTo(Naziv)==0);
 
-            //var Kolo_mecevi=Context.Mecevi.Include(p=>p.Turnir).Where(p=>p.Turnir.Naziv.CompareTo(Naziv)==0).Select(p=>p.Kolo==BrKola);
-
-            var Kolo_mecevi=Context.Mecevi.Include(p=>p.Turnir).Where(p=>p.Kolo==BrKola).Select(p=>p.Turnir.Naziv.CompareTo(Naziv)==0);
-
-            return Ok(Kolo_mecevi      );
+            return Ok(Kolo_mecevi);
         }
 
         [Route("Svi_turniri")]
@@ -160,7 +160,7 @@ namespace Web_Projekat_Sah.Controllers
 
         //              DELETE METODE
 
-        [Route("Brisanje turnira/{Naziv}")]
+        [Route("Brisanje_turnira/{Naziv}")]
         [HttpDelete]
         public async Task<ActionResult> Izbrisi_turnir(string Naziv)
         {
@@ -228,7 +228,7 @@ namespace Web_Projekat_Sah.Controllers
             }
         }
 
-        [Route("Kreiraj kolo/{Naziv}/{brKola}")]
+        [Route("Kreiraj_kolo/{Naziv}/{brKola}")]
         [HttpPut]
         public async Task<ActionResult> Kreiraj_kolo(string Naziv, int brKola)
         {
@@ -277,7 +277,7 @@ namespace Web_Projekat_Sah.Controllers
             }
         }
 
-        [Route("Upisi rezultate kola/{Naziv}/{brKola}")]
+        [Route("Upisi_rezultate_kola/{Naziv}/{brKola}")]
         [HttpPut]
         public async Task<ActionResult> Rezultati_kolo(string Naziv, int brKola, [FromQuery] int[] rezultati)
         {
@@ -323,7 +323,7 @@ namespace Web_Projekat_Sah.Controllers
             }
         }
 
-        [Route("Proglasi pobednika/{Naziv}")]
+        [Route("Proglasi_pobednika/{Naziv}")]
         [HttpPut]        
         public async Task<ActionResult> Proglasi_pobednika(string Naziv)
         {

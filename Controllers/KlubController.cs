@@ -113,7 +113,8 @@ namespace Web_Projekat_Sah.Controllers
             if (Naziv == "") return BadRequest("Morate uneti ime kluba");
             if (Naziv.Length > 50) return BadRequest("Pogresna duzina naziv!");
 
-            var Klub = Context.Klubovi.Include(p=>p.Igraci).Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();
+            var Klubovi = Context.Klubovi.Include(p=>p.Igraci);
+            var Klub=Klubovi.Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();
 
             return Ok(Klub);
         }

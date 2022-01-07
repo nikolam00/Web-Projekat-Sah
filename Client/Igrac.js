@@ -1,7 +1,5 @@
 export class Igrac {
 
-    
-
     constructor(fide, ime, prezime, datum_rodj, rejting, title) {
         this.fide = fide;
         this.ime = ime;

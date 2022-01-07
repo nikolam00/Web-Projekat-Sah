@@ -11,7 +11,7 @@ export class Klub {
 
 
 
-    DodajKlub(ListaKlubova, Naziv) {
+    DodajKlub(Naziv) {
         fetch("https://localhost:5001/Klub/Pregledaj_klub/" + Naziv,
             {
                 method: "GET"

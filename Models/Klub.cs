@@ -26,6 +26,6 @@ namespace Models
         public int Broj_Igraca { get; set; }
 
         [JsonIgnore]
-        public List<Igrac> Igraci { get; set;}
+        public virtual List<Igrac> Igraci { get; set;}
     }
 }

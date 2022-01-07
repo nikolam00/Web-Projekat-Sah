@@ -21,7 +21,11 @@ namespace Web_Projekat_Sah.Controllers
             Context = context;
         }
 
-        [Route("Unos igraca/{FideId}/{Ime}/{Prezime}/{Naziv_kluba}")]
+        //---------------------------------------------------------------------------------------------------------
+
+        //              POST METODE
+
+        [Route("Unos_igraca/{FideId}/{Ime}/{Prezime}/{Naziv_kluba}")]
         [HttpPost]
         public async Task<ActionResult> Dodaj_igraca(int FideId, string Ime, string Prezime, DateTime Datum_rodjenja, int Rating, Titula Title, string Naziv_kluba)
         {
@@ -69,7 +73,11 @@ namespace Web_Projekat_Sah.Controllers
             }
         }
 
-        [Route("Brisanje igraca/{FideId}")]
+        //---------------------------------------------------------------------------------------------------------
+
+        //              DELETE METODE
+
+        [Route("Brisanje_igraca/{FideId}")]
         [HttpDelete]
         public async Task<ActionResult> Izbrisi_igraca(int FideId)
         {
@@ -99,7 +107,11 @@ namespace Web_Projekat_Sah.Controllers
             }
         }
 
-        [Route("Pregledaj igraca/{FideId}")]
+        //---------------------------------------------------------------------------------------------------------
+
+        //              GET METODE
+
+        [Route("Pregledaj_igraca/{FideId}")]
         [HttpGet]
         public ActionResult Vrati_igraca(int FideId)
         {
@@ -120,7 +132,11 @@ namespace Web_Projekat_Sah.Controllers
             return Ok(Igraci.ToList());
         }
 
-        [Route("Promeni klub /{FideId}/{Naziv_klub}")]
+         //---------------------------------------------------------------------------------------------------------
+
+        //              PUT METODE
+
+        [Route("Promeni_klub/{FideId}/{Naziv_klub}")]
         [HttpPut]
         public async Task<ActionResult> Dodaj_igraca_u_klub(string Naziv_klub, int FideId)
         {
@@ -171,7 +187,7 @@ namespace Web_Projekat_Sah.Controllers
             }
         }
 
-        [Route("Promeni rejting /{FideId}")]
+        [Route("Promeni_rejting/{FideId}")]
         [HttpPut]
         public async Task<ActionResult> PromeniRating(int FideId, int PromenaRejtinga)
         {
