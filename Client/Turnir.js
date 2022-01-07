@@ -7,5 +7,8 @@ export class Turnir {
         this.datum_pocetka=datum_poc;
         this.nagrada=nagrada;
 
+        // Proveri kako da dodas listu meceva na turniru
+        //this.mecevi=[];
+
     }
 }

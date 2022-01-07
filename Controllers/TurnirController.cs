@@ -103,6 +103,7 @@ namespace Web_Projekat_Sah.Controllers
             .Include(p=>p.Klub_organizator)
             .Include(p=>p.Sudija)
             .Include(p=>p.Pobednik)
+            .Include(p=>p.Mecevi)
             .Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();
 
             return Ok(Turnir);
@@ -154,6 +155,21 @@ namespace Web_Projekat_Sah.Controllers
                         .Include(p=>p.Pobednik);
 
             return Ok(turnirs.ToList());
+        }
+
+        [Route("Svi_mecevi")]
+        [HttpGet]
+        public ActionResult Svi_mecevi()
+        {
+            var mecevi = Context.Mecevi
+                        .Include(p => p.Beli)
+                        .ThenInclude(p=>p.Klub)
+                        .Include(p=>p.Crni)
+                        .ThenInclude(p=>p.Klub)
+                        .Include(p=>p.Turnir)
+                        .ThenInclude(p=>p.Klub_organizator);
+
+            return Ok(mecevi.ToList());
         }
 
         //---------------------------------------------------------------------------------------------------------
@@ -210,7 +226,7 @@ namespace Web_Projekat_Sah.Controllers
                 {
                     if (Igrac != null)
                     {
-                        Turnir.Prijavljeni_igraci.Add(Igrac);   // Ovde javlja gresku!!!
+                        Turnir.Prijavljeni_igraci.Add(Igrac);   
 
                         Context.Turniri.Update(Turnir);
                         await Context.SaveChangesAsync();
@@ -237,7 +253,12 @@ namespace Web_Projekat_Sah.Controllers
 
             try
             {
-                var Turnir = Context.Turniri.Include(p => p.Mecevi).Include(p => p.Prijavljeni_igraci).Include(p => p.Ostali_igraci).Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();
+                var Turnir = Context.Turniri
+                            .Include(p => p.Mecevi)
+                            .Include(p => p.Prijavljeni_igraci)
+                            .Include(p => p.Ostali_igraci)
+                            .Include(p=>p.Mecevi)
+                            .Where(p => p.Naziv.CompareTo(Naziv) == 0).FirstOrDefault();
 
                 if (Turnir != null)
                 {
@@ -245,6 +266,8 @@ namespace Web_Projekat_Sah.Controllers
                     {
                         Turnir.Ostali_igraci = Turnir.Prijavljeni_igraci;
                     }
+
+                    // Proveri da li je bolja ideja da dodajes sve meceve u jednu listu, a da mecevi kola budu u drugoj listi meceva, i tada necu da imam Turnir u klasi Mec
 
                     Turnir.Mecevi.Clear();      // Svaki put kada kreiramo kolo, prethodni mecevi sa tog turnira se brisu
 

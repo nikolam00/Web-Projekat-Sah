@@ -1,0 +1,58 @@
+/* Deo za prikaz zaglavlja*/
+
+.GlavniKontejner {}
+
+.NaslovLabel {
+    font-size: 50px;
+    font-weight: bold;
+    color: darkblue;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+}
+
+.KontaktLab {
+    font-size: 20px;
+    font-weight: bold;
+    color: darkblue;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+}
+
+.NaslovForm {
+    text-align: center;
+    align-items: center;
+    display: flex;
+    padding: 1rem 2rem;
+    width: 100%;
+    height: 100%;
+    justify-content: space-between;
+}
+
+.KontaktForm {
+    align-items: center;
+}
+
+.Zaglavlje {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between
+}
+
+
+/* Deo za prikaz zaglavlja*/
+
+.Meni {
+    width: 100%;
+    height: 100%;
+    justify-content: space-between;
+    display: flex;
+}
+
+.Dugmici {
+    fill: darkkhaki;
+    width: 100%;
+    height: 100%;
+}
