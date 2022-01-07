@@ -142,6 +142,20 @@ namespace Web_Projekat_Sah.Controllers
             return Ok(Kolo_mecevi      );
         }
 
+        [Route("Svi_turniri")]
+        [HttpGet]
+        public ActionResult Svi_turniri()
+        {
+            var turnirs = Context.Turniri
+                        .Include(p => p.Klub_organizator)
+                        .Include(p=>p.Prijavljeni_igraci)
+                        .Include(p=>p.Ostali_igraci)
+                        .Include(p=>p.Sudija)
+                        .Include(p=>p.Pobednik);
+
+            return Ok(turnirs.ToList());
+        }
+
         //---------------------------------------------------------------------------------------------------------
 
         //              DELETE METODE

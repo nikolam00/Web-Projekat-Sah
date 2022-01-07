@@ -74,6 +74,15 @@ namespace Web_Projekat_Sah.Controllers
             return Ok(Sudija);
         }
 
+        [Route("Sve_sudije")]
+        [HttpGet]
+        public ActionResult Sve_sudije()
+        {
+            var arbitri = Context.Sudije.Include(p=>p.Sudjeni_turniri);
+                    
+            return Ok(arbitri.ToList());
+        }
+
         [Route("Pogledaj sudjene turnire/{Ime}/{Prezime}")]
         [HttpGet]
         public ActionResult Sudjeni_turniri(string Ime, string Prezime)

@@ -26,7 +26,7 @@ namespace Web_Projekat_Sah.Controllers
 
         //              POST METODE
 
-        [Route("Unos kluba/{Naziv}/{Mesto}/{Broj_Telefona}")]
+        [Route("Unos_kluba/{Naziv}/{Mesto}/{Broj_Telefona}")]
         [HttpPost]
         public async Task<ActionResult> Dodaj_klub(string Naziv, string Mesto, string Broj_Telefona)
         {
@@ -73,7 +73,7 @@ namespace Web_Projekat_Sah.Controllers
 
         //              DELETE METODE
 
-        [Route("Brisanje kluba/{Naziv}")]
+        [Route("Brisanje_kluba/{Naziv}")]
         [HttpDelete]
         public async Task<ActionResult> Izbrisi_klub(string Naziv)
         {
@@ -106,7 +106,7 @@ namespace Web_Projekat_Sah.Controllers
 
         //              GET METODE
 
-        [Route("Pregledaj klub/{Naziv}")]
+        [Route("Pregledaj_klub/{Naziv}")]
         [HttpGet]
         public ActionResult Vrati_klub(string Naziv)
         {
@@ -118,7 +118,16 @@ namespace Web_Projekat_Sah.Controllers
             return Ok(Klub);
         }
 
-        [Route("Igraci kluba/{Naziv}")]
+        [Route("Svi_klubovi")]
+        [HttpGet]
+        public ActionResult Svi_klubovi()
+        {
+            var klubs = Context.Klubovi.Include(p => p.Igraci);
+
+            return Ok(klubs.ToList());
+        }
+
+        [Route("Igraci_kluba/{Naziv}")]
         [HttpGet]
         public ActionResult Vrati_igrace(string Naziv)
         {
@@ -134,7 +143,7 @@ namespace Web_Projekat_Sah.Controllers
 
         //              PUT METODE
 
-        [Route("Dodaj igraca u klub/{Naziv_klub}/{FideId}")]
+        [Route("Dodaj_igraca_u_klub/{Naziv_klub}/{FideId}")]
         [HttpPut]
         public async Task<ActionResult> Dodaj_igraca_u_klub(string Naziv_klub, int FideId)
         {
@@ -172,7 +181,7 @@ namespace Web_Projekat_Sah.Controllers
             }
         }
 
-        [Route("Izbrisi igraca iz kluba/{Naziv_klub}/{FideId}")]
+        [Route("Izbrisi_igraca_iz_kluba/{Naziv_klub}/{FideId}")]
         [HttpPut]
         public async Task<ActionResult> Izbrisi_igraca(string Naziv_klub, int FideId)
         {

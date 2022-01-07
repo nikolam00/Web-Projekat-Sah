@@ -105,9 +105,19 @@ namespace Web_Projekat_Sah.Controllers
         {
             if (FideId < 0 || FideId > 999999) return BadRequest("Pogresna vrednost za FideId!");
 
-            var Igrac = Context.Igraci.Include(p=>p.Klub).Where(p => p.Fide == FideId).FirstOrDefault();
+            var Igrac = Context.Igraci.Include(p => p.Klub).Where(p => p.Fide == FideId).FirstOrDefault();
 
             return Ok(Igrac);
+        }
+
+        [Route("Svi_igraci")]
+        [HttpGet]
+        public ActionResult Svi_igraci()
+        {
+
+            var Igraci = Context.Igraci.Include(p => p.Klub);
+
+            return Ok(Igraci.ToList());
         }
 
         [Route("Promeni klub /{FideId}/{Naziv_klub}")]
@@ -120,25 +130,25 @@ namespace Web_Projekat_Sah.Controllers
 
             try
             {
-                var Igrac = Context.Igraci.Include(p=>p.Klub).Where(p => p.Fide == FideId).FirstOrDefault();
-                var pKlub = Context.Klubovi.Include(p=>p.Igraci).Where(p => p.Naziv.CompareTo(Naziv_klub) == 0).FirstOrDefault();
+                var Igrac = Context.Igraci.Include(p => p.Klub).Where(p => p.Fide == FideId).FirstOrDefault();
+                var pKlub = Context.Klubovi.Include(p => p.Igraci).Where(p => p.Naziv.CompareTo(Naziv_klub) == 0).FirstOrDefault();
 
-                if(pKlub!=null)
+                if (pKlub != null)
                 {
-                    if(Igrac!=null)
+                    if (Igrac != null)
                     {
-                        Igrac.Klub=pKlub;
-                        
+                        Igrac.Klub = pKlub;
+
                         // Deo za dodavanje igraca u klub samo ako on nije vec u tom klubu
 
-                        int q=1;
+                        int q = 1;
 
-                        foreach(var I in pKlub.Igraci)
+                        foreach (var I in pKlub.Igraci)
                         {
-                            if(I.Fide==Igrac.Fide) q=0;
+                            if (I.Fide == Igrac.Fide) q = 0;
                         }
 
-                        if(q==1)
+                        if (q == 1)
                         {
                             pKlub.Igraci.Add(Igrac);
                         }
@@ -148,7 +158,7 @@ namespace Web_Projekat_Sah.Controllers
                 }
                 else
                     return BadRequest($"Klub {Naziv_klub} ne postoji u bazi!");
-                
+
                 Context.Igraci.Update(Igrac);
                 Context.Klubovi.Update(pKlub);
 
@@ -166,13 +176,13 @@ namespace Web_Projekat_Sah.Controllers
         public async Task<ActionResult> PromeniRating(int FideId, int PromenaRejtinga)
         {
             if (FideId < 0 || FideId > 999999) return BadRequest("Pogresna vrednost za FideId!");
-            if (PromenaRejtinga<-200 || PromenaRejtinga>200) return BadRequest("Pogresna vrednost za promenu rejtinga!");
+            if (PromenaRejtinga < -200 || PromenaRejtinga > 200) return BadRequest("Pogresna vrednost za promenu rejtinga!");
 
-             try
+            try
             {
                 var Igrac = Context.Igraci.Where(p => p.Fide == FideId).FirstOrDefault();
 
-                Igrac.Rejting=Igrac.Rejting+PromenaRejtinga;
+                Igrac.Rejting = Igrac.Rejting + PromenaRejtinga;
 
                 Context.Igraci.Update(Igrac);
                 await Context.SaveChangesAsync();
