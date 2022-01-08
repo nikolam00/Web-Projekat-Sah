@@ -49,7 +49,6 @@ export class Savez {
         Meni.className = "Meni";
         this.kont.appendChild(Meni);
 
-
         Dugmici.forEach(D => {
             var btn = document.createElement("button");
             btn.innerHTML = D;
@@ -57,6 +56,17 @@ export class Savez {
             Btns.push(btn);
             Meni.appendChild(btn);
         });
+
+        let GlavniForma = document.createElement("div");
+        GlavniForma.className = "GlavnaForma";
+        this.kont.appendChild(GlavniForma);
+
+        Btns[0].onclick = (ev) => this.prikaziIgrace(GlavniForma);
+        Btns[1].onclick = (ev) => this.prikaziKlubove(GlavniForma);
+        Btns[2].onclick = (ev) => this.prikaziTurnire(GlavniForma);
+        Btns[3].onclick = (ev) => this.prikaziSudije(GlavniForma);
+        Btns[4].onclick = (ev) => this.prikaziIgrace(GlavniForma);
+
 
 
     }
@@ -82,5 +92,95 @@ export class Savez {
 
     }
 
+    prikaziIgrace(host) {
 
+        let FormaPrikaz = document.createElement("div");
+        FormaPrikaz.className = "FormaPrikaz";
+        FormaPrikaz.id = "FormPrikaz";
+        host.appendChild(FormaPrikaz);
+
+        let FormaKontrole = document.createElement("div");
+        FormaKontrole.className = "FormaKontrole";
+        host.appendChild(FormaKontrole);
+
+        // Deo za levi deo diva, tu cemo da prikazujemo igrace
+        var H2 = document.createElement("h2");
+        H2.innerHTML = "Lista igraca";
+        FormaPrikaz.appendChild(H2);
+
+        var IgraciTabela = document.createElement("table");
+        IgraciTabela.className = "TabelaIgraci";
+        FormaPrikaz.append(IgraciTabela);
+
+        var IgraciHead = document.createElement("thead");
+        IgraciTabela.appendChild(IgraciHead);
+
+        var tr = document.createElement("tr");
+        IgraciHead.appendChild(tr);
+
+        let th;
+        var Head = ["FIDE", "Ime", "Prezime", "Datum rodjenja", "Rejting", "Klub"];
+        Head.forEach(el => {
+            th = document.createElement("th");
+            th.innerHTML = el;
+            tr.appendChild(th);
+        })
+
+        var IgraciBody = document.createElement("tbody");
+        IgraciBody.className = "IgraciPodaci";
+        IgraciTabela.appendChild(IgraciBody);
+
+        this.listaIgraca.forEach(I => {
+            I.crtaj(IgraciTabela);
+        })
+
+        // Pogledaj da ne izlazi svaki put kad kliknes nova tabela
+
+    }
+
+    /*prikaziKlubove(host) {
+
+        let FormaPrikaz = document.createElement("div");
+        FormaPrikaz.className = "FormaPrikaz";
+        FormaPrikaz.id = "FormPrikaz";
+        host.appendChild(FormaPrikaz);
+
+        let FormaKontrole = document.createElement("div");
+        FormaKontrole.className = "FormaKontrole";
+        host.appendChild(FormaKontrole);
+
+        // Deo za levi deo diva, tu cemo da prikazujemo igrace
+        var H2 = document.createElement("h2");
+        H2.innerHTML = "Lista igraca";
+        FormaPrikaz.appendChild(H2);
+
+        var IgraciTabela = document.createElement("table");
+        IgraciTabela.className = "TabelaIgraci";
+        FormaPrikaz.append(IgraciTabela);
+
+        var IgraciHead = document.createElement("thead");
+        IgraciTabela.appendChild(IgraciHead);
+
+        var tr = document.createElement("tr");
+        IgraciHead.appendChild(tr);
+
+        let th;
+        var Head = ["FIDE", "Ime", "Prezime", "Datum rodjenja", "Rejting", "Klub"];
+        Head.forEach(el => {
+            th = document.createElement("th");
+            th.innerHTML = el;
+            tr.appendChild(th);
+        })
+
+        var IgraciBody = document.createElement("tbody");
+        IgraciBody.className = "IgraciPodaci";
+        IgraciTabela.appendChild(IgraciBody);
+
+        this.listaIgraca.forEach(I => {
+            I.crtaj(IgraciTabela);
+        })
+
+        // Pogledaj da ne izlazi svaki put kad kliknes nova tabela
+
+    }*/
 }

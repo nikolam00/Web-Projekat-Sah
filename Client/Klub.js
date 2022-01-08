@@ -1,5 +1,5 @@
 export class Klub {
-    
+
     constructor(id, naziv, mesto, br_Tel) {
         this.id = id;
         this.naziv = naziv;
@@ -7,31 +7,31 @@ export class Klub {
         this.br_Tel = br_Tel;
     }
 
+    crtaj(host) {
 
+        var tr = document.createElement("tr");
+        host.appendChild(tr);
 
+        var el = document.createElement("td");
+        el.innerHTML = this.id;
+        tr.appendChild(el);
 
+        var el = document.createElement("td");
+        el.innerHTML = this.naziv;
+        tr.appendChild(el);
 
-    DodajKlub(Naziv) {
-        fetch("https://localhost:5001/Klub/Pregledaj_klub/" + Naziv,
-            {
-                method: "GET"
-            })
-            .then(p => {
-                p.json().then(K => {
-                    var club = new Klub(K.klubID, K.naziv, K.mesto, K.broj_Telefona);
+        var el = document.createElement("td");
+        el.innerHTML = this.mesto;
+        tr.appendChild(el);
 
-                    club.id = K.klubID;
-                    club.naziv = K.naziv;
-                    club.mesto = K.mesto;
-                    club.br_Tel = K.broj_Telefona;
+        var el = document.createElement("td");
+        el.innerHTML = this.br_Tel;
+        tr.appendChild(el);
 
-                    console.log(club);
-
-                    ListaKlubova.push(club);
-                }
-                )
-            })
     }
-    
-}
 
+
+
+
+
+}

@@ -68,7 +68,7 @@ fetch("https://localhost:5001/Klub/Svi_klubovi")
                                                 ListaMeceva.push(mec);
                                                 //console.log(mec);
 
-                                                // Ovde ide konstruktor za Savez
+
                                             });
 
                                         })
@@ -77,13 +77,10 @@ fetch("https://localhost:5001/Klub/Svi_klubovi")
                             })
                     })
             })
-})
+    })
 
-
-var SSJO=new Savez("Sahovski savez Jablanickog okruga",ListaIgraca,ListaKlubova,ListaTurnira,ListaSudija,ListaMeceva);
+var SSJO = new Savez("Sahovski savez Jablanickog okruga", ListaIgraca, ListaKlubova, ListaTurnira, ListaSudija, ListaMeceva);
 
 SSJO.CrtajNaslovnu_Stranu(document.body);
 
 console.log(SSJO);
-
-

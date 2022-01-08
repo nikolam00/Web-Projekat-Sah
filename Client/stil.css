@@ -1,7 +1,5 @@
 /* Deo za prikaz zaglavlja*/
 
-.GlavniKontejner {}
-
 .NaslovLabel {
     font-size: 50px;
     font-weight: bold;
@@ -53,6 +51,25 @@
 
 .Dugmici {
     fill: darkkhaki;
+    font-size: 20px;
+    font-weight: bold;
     width: 100%;
     height: 100%;
+}
+
+.TabelaIgraci {
+    width: 100%;
+    height: 100%;
+}
+
+table,
+tr,
+th,
+td {
+    text-align: center;
+    border: 1px solid gray;
+}
+
+table {
+    border-collapse: collapse;
 }
