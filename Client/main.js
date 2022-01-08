@@ -22,7 +22,7 @@ fetch("https://localhost:5001/Klub/Svi_klubovi")
                 //console.log(K);
             });
 
-            // Ovde treba da se ubacuju redom ucitavanje za ostalo, ulancavaju se u then 
+
         })
 
         fetch("https://localhost:5001/Igrac/Svi_igraci")

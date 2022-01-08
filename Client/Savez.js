@@ -38,7 +38,7 @@ export class Savez {
         this.CrtajKontakt(KontaktForma);
 
         let KontaktLab = document.createElement("label");
-        KontaktLab.innerHTML = "Kontakt: 016458794";
+        KontaktLab.innerHTML = "Kontakt:" + "016458794";
         KontaktLab.className = "KontaktLab";
         //this.kont.appendChild(KontaktLab);
         KontaktForma.appendChild(KontaktLab);
@@ -88,15 +88,12 @@ export class Savez {
         img.height = "35";
         img.width = "35";
         host.appendChild(img);
-
-
     }
 
     prikaziIgrace(host) {
 
         let FormaPrikaz = document.createElement("div");
         FormaPrikaz.className = "FormaPrikaz";
-        FormaPrikaz.id = "FormPrikaz";
         host.appendChild(FormaPrikaz);
 
         let FormaKontrole = document.createElement("div");
@@ -134,9 +131,42 @@ export class Savez {
             I.crtaj(IgraciTabela);
         })
 
+        // Kraj za deo koji prikazuje igrace
+
+        // Deo koji prikazuje kontrole
+
+        var H2K = document.createElement("h2");
+        H2K.innerHTML = "Podaci o igracu";
+        FormaKontrole.appendChild(H2K);
+
+        //this.IscrtajKontroleIgrac(FormaKontrole);
         // Pogledaj da ne izlazi svaki put kad kliknes nova tabela
 
     }
+
+    /*IscrtajKontrolIgrac(host) {
+        var Kontrole = ["Ime:", "Prezime:", "Datum rodjenja:", "Rejting:", "Titula:", "Klub:"];
+
+        Kontrole.forEach(K => {
+            var
+        })
+
+        var Ime = document.createElement("div");
+        Ime.className = "IgracKontrole";
+        host.appendChild(Ime);
+
+        var Prezime = document.createElement("div");
+        Prezime.className = "IgracKontrole";
+        host.appendChild(Prezime);
+
+        var Dat_rodjenja = document.createElement("div");
+        Dat_rodjenja.className = "IgracKontrole";
+        host.appendChild(Dat_rodjenja);
+
+        var Rejting = document.createElement("div");
+        Dat_rodjenja.className = "IgracKontrole";
+        host.appendChild(Dat_rodjenja);
+    }*/
 
     /*prikaziKlubove(host) {
 
@@ -183,4 +213,7 @@ export class Savez {
         // Pogledaj da ne izlazi svaki put kad kliknes nova tabela
 
     }*/
+
+
+
 }
