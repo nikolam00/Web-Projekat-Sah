@@ -29,7 +29,7 @@ fetch("https://localhost:5001/Klub/Svi_klubovi")
             .then(p => {
                 p.json().then(Igraci => {
                     Igraci.forEach(I => {
-                        //console.log(I);
+                        console.log(I);
                         var player = new Igrac(I.fide, I.ime, I.prezime, I.datum_rodjenja, I.rejting, I.titula, I.klub);
                         ListaIgraca.push(player);
                         //console.log(player);

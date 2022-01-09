@@ -187,7 +187,7 @@ namespace Web_Projekat_Sah.Controllers
             }
         }
 
-        [Route("Promeni_rejting/{FideId}")]
+        [Route("Promeni_rejting/{FideId}/{PromenaRejtinga}")]
         [HttpPut]
         public async Task<ActionResult> PromeniRating(int FideId, int PromenaRejtinga)
         {

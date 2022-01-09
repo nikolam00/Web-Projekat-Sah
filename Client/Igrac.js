@@ -41,6 +41,7 @@ export class Igrac {
         var el = document.createElement("td");
         el.innerHTML = this.klub.naziv;
         tr.appendChild(el);
+
     }
 
 
