@@ -17,7 +17,7 @@ fetch("https://localhost:5001/Klub/Svi_klubovi")
         p.json().then(Klubovi => {
             Klubovi.forEach(K => {
                 //console.log(K);
-                var club = new Klub(K.klubID, K.naziv, K.mesto, K.broj_Telefona);
+                var club = new Klub(K.klubID, K.naziv, K.mesto, K.broj_Telefona, K.broj_Igraca);
                 ListaKlubova.push(club);
                 //console.log(K);
             });
@@ -29,10 +29,9 @@ fetch("https://localhost:5001/Klub/Svi_klubovi")
             .then(p => {
                 p.json().then(Igraci => {
                     Igraci.forEach(I => {
-                        console.log(I);
+                        //console.log(I);
                         var player = new Igrac(I.fide, I.ime, I.prezime, I.datum_rodjenja, I.rejting, I.titula, I.klub);
                         ListaIgraca.push(player);
-                        //console.log(player);
                     });
                 })
 
@@ -66,9 +65,6 @@ fetch("https://localhost:5001/Klub/Svi_klubovi")
                                                 var mec = new Mec(M.beli, M.crni, M.turnir, M.kolo, M.result);
 
                                                 ListaMeceva.push(mec);
-                                                //console.log(mec);
-
-
                                             });
 
                                         })
@@ -83,4 +79,4 @@ var SSJO = new Savez("Sahovski savez Jablanickog okruga", ListaIgraca, ListaKlub
 
 SSJO.CrtajNaslovnu_Stranu(document.body);
 
-console.log(SSJO);
+//console.log(SSJO);

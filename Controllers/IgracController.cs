@@ -53,6 +53,7 @@ namespace Web_Projekat_Sah.Controllers
             player.Titula = Title;
 
             var club = Context.Klubovi.Where(p => p.Naziv.CompareTo(Naziv_kluba) == 0).FirstOrDefault();
+            
 
             if (club == null)
             {
@@ -60,10 +61,12 @@ namespace Web_Projekat_Sah.Controllers
             }
 
             player.Klub = club;
+            club.Broj_Igraca++;
 
             try
             {
                 Context.Igraci.Add(player);
+                Context.Klubovi.Update(club);
                 await Context.SaveChangesAsync();
                 return Ok($"Igrac {Ime} {Prezime} je dodat u bazu!");
             }

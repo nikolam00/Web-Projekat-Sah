@@ -26,9 +26,9 @@ namespace Web_Projekat_Sah.Controllers
 
         //              POST METODE
 
-        [Route("Unos_sudije/{Ime}/{Prezime}")]
+        [Route("Unos_sudije/{Ime}/{Prezime}/{Kategorija}")]
         [HttpPost]
-        public async Task<ActionResult> Dodaj_sudija(string Ime, string Prezime, Kategorija category)
+        public async Task<ActionResult> Dodaj_sudija(string Ime, string Prezime, Kategorija Kategorija)
         {
             if (Ime == "") return BadRequest("Morate uneti ime sudije");
             if (Ime.Length > 20) return BadRequest("Pogresna duzina!");
@@ -40,7 +40,7 @@ namespace Web_Projekat_Sah.Controllers
 
             Arbitar.Ime = Ime;
             Arbitar.Prezime = Prezime;
-            Arbitar.Kategorija = category;
+            Arbitar.Kategorija = Kategorija;
             Arbitar.Sudjeni_turniri=new List<Turnir>();
 
             try

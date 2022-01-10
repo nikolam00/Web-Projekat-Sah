@@ -53,8 +53,8 @@ namespace Web_Projekat_Sah.Controllers
             Club.Naziv = Naziv;
             Club.Mesto = Mesto;
             Club.Broj_Telefona = Broj_Telefona;
-            Club.Broj_Igraca = Club.Igraci.Count;
             Club.Igraci=new List<Igrac>();
+            Club.Broj_Igraca = Club.Igraci.Count;
 
             try
             {
