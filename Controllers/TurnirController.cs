@@ -26,7 +26,7 @@ namespace Web_Projekat_Sah.Controllers
 
         //              POST METODE
 
-        [Route("Unos_turnira/{Naziv}/{Klub_organizator}/{Mesto}/{Broj_Telefona}/{Sudija_ID}")]
+        [Route("Unos_turnira/{Naziv}/{Klub_organizator}/{Pocetak}/{Mesto}/{Broj_Telefona}/{Nagrada}/{Sudija_ID}")]
         [HttpPost]
         public async Task<ActionResult> Dodaj_turnir(string Naziv, string Klub_organizator, int Sudija_ID, DateTime Pocetak, string Mesto, int Nagrada)
         {
@@ -168,6 +168,22 @@ namespace Web_Projekat_Sah.Controllers
                         .ThenInclude(p=>p.Klub)
                         .Include(p=>p.Turnir)
                         .ThenInclude(p=>p.Klub_organizator);
+
+            return Ok(mecevi.ToList());
+        }
+
+        [Route("Mecevi_igrac/{Fide}")]
+        [HttpGet]
+        public ActionResult Svi_mecevi_igrac(int Fide)
+        {
+            var mecevi = Context.Mecevi
+                        .Include(p => p.Beli)
+                        .ThenInclude(p=>p.Klub)
+                        .Include(p=>p.Crni)
+                        .ThenInclude(p=>p.Klub)
+                        .Include(p=>p.Turnir)
+                        .ThenInclude(p=>p.Klub_organizator)
+                        .Where(p=>p.Beli.Fide==Fide||p.Crni.Fide==Fide);
 
             return Ok(mecevi.ToList());
         }

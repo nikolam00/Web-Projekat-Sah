@@ -64,7 +64,6 @@ export class Savez {
         this.kont.appendChild(GlavniForma);
 
 
-
         Btns[0].onclick = (ev) => this.prikaziIgrace(GlavniForma);
         Btns[1].onclick = (ev) => this.prikaziKlubove(GlavniForma);
         Btns[2].onclick = (ev) => this.prikaziTurnire(GlavniForma);
@@ -902,7 +901,6 @@ export class Savez {
                         this.listaIgraca.push(player);
                     });
 
-
                     //#region Prikaz tabele sa Igracim
 
                     this.DodajHeader(FormaPrikaz, "Lista igraca");
@@ -1210,7 +1208,7 @@ export class Savez {
 
     DodajSudiju(Ime, Prezime, Kategorija) {
 
-        console.log(Kategorija);
+        //console.log(Kategorija);
 
         fetch("https://localhost:5001/Sudija/Unos_sudije/" + Ime + "/" + Prezime + "/" + Kategorija, {
             method: 'POST',
@@ -1373,7 +1371,401 @@ export class Savez {
 
     PretraziMeceveIgraca(host, Fide) {
 
+        var FormaPrikaz = document.querySelector(".FormaPrikaz");
+        this.removeAllChildNodes(FormaPrikaz);
+
+        this.listaMeceva = [];
+
+        fetch("https://localhost:5001/Turnir/Mecevi_igrac/" + Fide)
+            .then(p => {
+                p.json().then(Mecevi => {
+                    Mecevi.forEach(M => {
+                        console.log(M);
+                        var mec = new Mec(M.beli, M.crni, M.turnir, M.kolo, M.result);
+                        this.listaMeceva.push(mec);
+                        //console.log(K);
+                    });
+
+                    this.DodajHeader(FormaPrikaz, "Mecevi igraca:");
+
+                    var MeceviTabela = document.createElement("table");
+                    MeceviTabela.className = "TabelaMecevi";
+                    FormaPrikaz.append(MeceviTabela);
+
+                    var MeceviHead = document.createElement("thead");
+                    MeceviTabela.appendChild(MeceviHead);
+
+                    var tr = document.createElement("tr");
+                    MeceviHead.appendChild(tr);
+
+                    let th;
+                    var Head = ["Beli", "Rezultat", "Crni", "Turnir", "Kolo"];
+                    Head.forEach(el => {
+                        th = document.createElement("th");
+                        th.innerHTML = el;
+                        tr.appendChild(th);
+                    })
+
+                    var MeceviBody = document.createElement("tbody");
+                    MeceviBody.className = "MeceviPodaci";
+                    MeceviTabela.appendChild(MeceviBody);
+
+                    this.listaMeceva.forEach(M => {
+                        console.log(M);
+                        M.crtaj(MeceviTabela);
+                    })
+
+                    // Kraj za deo koji prikazuje klubove
+                })
+            });
+    }
+
+    //#endregion
+
+    //#region  Turnir
+
+    prikaziTurnire(host) {
+        this.removeAllChildNodes(host);
+
+        this.listaTurnira = [];
+
+        fetch("https://localhost:5001/Turnir/Svi_turniri")
+            .then(p => {
+                p.json().then(Turniri => {
+                    Turniri.forEach(T => {
+                        console.log(T);
+                        var turnir = new Turnir(T.naziv, T.mesto, T.datum_pocetka, T.nagrada, T.klub_organizator, T.pobednik, T.sudija);
+                        this.listaTurnira.push(turnir);
+                    });
+
+                    var FormaPrikaz = document.createElement("div");
+                    FormaPrikaz.className = "FormaPrikaz";
+                    host.appendChild(FormaPrikaz);
+
+                    var FormaKontrole = document.createElement("div");
+                    FormaKontrole.className = "FormaKontrole";
+                    host.appendChild(FormaKontrole);
+
+                    this.DodajHeader(FormaPrikaz, "Lista turnira");
+
+                    var TurniriTabela = document.createElement("table");
+                    TurniriTabela.className = "TabelaSudije";
+                    FormaPrikaz.append(TurniriTabela);
+
+                    var TurniriHead = document.createElement("thead");
+                    TurniriTabela.appendChild(TurniriHead);
+
+                    var tr = document.createElement("tr");
+                    TurniriHead.appendChild(tr);
+
+                    let th;
+                    var Head = ["Naziv", "Mesto", "Datum pocetka", "Nagrada", "Klub organizator", "Pobednik", "Sudija"];
+                    Head.forEach(el => {
+                        th = document.createElement("th");
+                        th.innerHTML = el;
+                        tr.appendChild(th);
+                    })
+
+                    var TurniriBody = document.createElement("tbody");
+                    TurniriBody.className = "TurniriPodaci";
+                    TurniriTabela.appendChild(TurniriBody);
+
+                    this.listaTurnira.forEach(T => {
+                        T.crtaj(TurniriTabela);
+                    })
+
+                    // Kraj za deo koji prikazuje klubove
+
+                    // Deo koji prikazuje kontrole
+
+                    this.DodajHeader(FormaKontrole, "Kontrole sudija:");
+
+                    this.IscrtajKontroleTurnir(FormaKontrole);
+                })
+            });
+    }
+
+    IscrtajKontroleTurnir(host) {
+        this.removeAllChildNodes(host);
+
+        this.DodajHeader(host, "Turnir:");
+
+        var Naziv = document.createElement("div");
+        Naziv.className = "IgracKontrole";
+        host.appendChild(Naziv);
+
+        var lblNaziv = document.createElement("label");
+        lblNaziv.className = "LabeleKontrole";
+        lblNaziv.innerHTML = "Naziv turnira:";
+        Naziv.appendChild(lblNaziv);
+
+        var inputNaziv = document.createElement("input");
+        inputNaziv.setAttribute("type", "text");
+        inputNaziv.className = "InputKontrole";
+        Naziv.appendChild(inputNaziv);
+
+        var Btns = document.createElement("div");
+        Btns.className = "Meni";
+        host.appendChild(Btns);
+
+        var Pretrazi = document.createElement("button");
+        Pretrazi.innerHTML = "Pretrazi";
+        Pretrazi.className = "btnPretrazi"
+        Btns.appendChild(Pretrazi);
+
+
+        let GlavnaForma = document.querySelector(".GlavnaForma");
+        Pretrazi.onclick = (ev) => this.prikaziTurnir(GlavnaForma, inputNaziv.value);
+    }
+
+    prikaziTurnir(host, NazivTurnira) {
+        this.removeAllChildNodes(host);
+
+        let FormaPrikaz = document.createElement("div");
+        FormaPrikaz.className = "FormaPrikaz";
+        host.appendChild(FormaPrikaz);
+
+        var FormaKontrole = document.createElement("div");
+        FormaKontrole.className = "FormaKontrole";
+        host.appendChild(FormaKontrole);
+
+
+        this.DodajHeader(FormaPrikaz, "Turnir: " + NazivTurnira);
+
+        this.listaTurnira = [];
+        this.listaIgraca = [];
+
+        var turnir;
+
+        this.DodajHeader(FormaPrikaz, "Lista igraca");
+
+        fetch("https://localhost:5001/Turnir/Pregledaj_turnir/" + NazivTurnira)
+            .then(p => {
+                p.json().then(T => {
+
+                    turnir = new Turnir(T.naziv, T.mesto, T.datum_pocetka, T.nagrada, T.klub_organizator, T.pobednik, T.sudija);
+                    this.listaTurnira.push(turnir);
+                })
+
+                //#region Prikaz tabele sa Igracim
+
+                fetch("https://localhost:5001/Turnir/Prijavljeni_igraci/" + NazivTurnira)
+                    .then(p => {
+                        p.json().then(Igraci => {
+
+                            Igraci.forEach(I => {
+
+                                var player = new Igrac(I.fide, I.ime, I.prezime, I.datum_rodjenja, I.rejting, I.titula, I.klub);
+                                console.log(player);
+                                this.listaIgraca.push(player);
+                            })
+
+                            var IgraciTabela = document.createElement("table");
+                            IgraciTabela.className = "TabelaIgraci";
+                            FormaPrikaz.append(IgraciTabela);
+
+                            var IgraciHead = document.createElement("thead");
+                            IgraciTabela.appendChild(IgraciHead);
+
+                            var tr = document.createElement("tr");
+                            IgraciHead.appendChild(tr);
+
+                            let th;
+                            var Head = ["FIDE", "Ime", "Prezime", "Datum rodjenja", "Rejting", "Klub"];
+                            Head.forEach(el => {
+                                th = document.createElement("th");
+                                th.innerHTML = el;
+                                tr.appendChild(th);
+                            })
+
+                            var IgraciBody = document.createElement("tbody");
+                            IgraciBody.className = "IgraciPodaci";
+                            IgraciTabela.appendChild(IgraciBody);
+
+                            this.listaIgraca.forEach(I => {
+
+                                console.log(I);
+                                I.crtaj(IgraciTabela);
+                            })
+                        })
+
+
+                    })
+            });
+
+
+        this.DodajHeader(FormaKontrole, "Turnir:");
+
+        this.IscrtajKontrole_Izabrani_Turnir(FormaKontrole);
+
+    }
+
+    IscrtajKontrole_Izabrani_Turnir(host) {
+        this.removeAllChildNodes(host);
+
+        this.DodajHeader(host, "Mec:");
+
+        var Kontrole = ["Upisi igraca", "Dodaj kolo", "Upisi rezultate kola", "Proglasi pobednika"];
+        var btnsKontrole = [];
+
+        Kontrole.forEach(K => {
+            var btn = document.createElement("button");
+            btn.innerHTML = K;
+            btn.className = "DugmiciKontrole";
+            btnsKontrole.push(btn);
+            host.appendChild(btn);
+        })
+
+        btnsKontrole[0].onclick = (ev) => this.IscrtajKontroleTurnir_UpisiIgraca(host);
+        btnsKontrole[1].onclick = (ev) => this.IscrtajKontroleTurnir_DodajKolo(host);
+    }
+
+    IscrtajKontroleTurnir_UpisiIgraca(host) {
+        this.removeAllChildNodes(host);
+        this.DodajHeader(host, "Upisi igraca:");
+
+        var PoljeKontrole = document.createElement("div");
+        PoljeKontrole.className = "IgracKontrole";
+        host.appendChild(PoljeKontrole);
+
+        // Polja za prikaz
+
+        var Fide = document.createElement("div");
+        Fide.className = "IgracKontrole";
+        PoljeKontrole.appendChild(Fide);
+
+        var lblFide = document.createElement("label");
+        lblFide.className = "LabeleKontrole";
+        lblFide.innerHTML = "Fide";
+        Fide.appendChild(lblFide);
+
+        var inputFide = document.createElement("input");
+        inputFide.setAttribute("type", "text");
+        inputFide.className = "InputKontrole";
+        Fide.appendChild(inputFide);
+
+
+        // Dugmici
+
+        var Btns = document.createElement("div");
+        Btns.className = "Meni";
+        host.appendChild(Btns);
+
+        var Dodaj = document.createElement("button");
+        Dodaj.innerHTML = "Dodaj";
+        Dodaj.className = "DugmiciDodajOdustani";
+        Btns.appendChild(Dodaj);
+
+        Dodaj.onclick = (ev) => {
+            //if (inputFide.value === "" || inputIme.value === "" || inputPrezime.value === "" || inputKlub.value === "")
+            //    alert("Morate uneti podatke za Fide, Ime, Prezime i Klub!");
+
+            console.log(this.listaTurnira[0].naziv);
+
+            console.log(inputFide.value);
+
+            this.Dodaj_Igraca_u_Listu(this.listaTurnira[0].naziv, inputFide.value);
         }
-        //#endregion
+
+        var Odustani = document.createElement("button");
+        Odustani.innerHTML = "Odustani";
+        Odustani.className = " DugmiciDodajOdustani"
+        Btns.appendChild(Odustani);
+
+        Odustani.onclick = (ev) => this.IscrtajKontroleKlub(host);
+    }
+
+    Dodaj_Igraca_u_Listu(Naziv, FideId) {
+
+        console.log(Naziv);
+
+        console.log(FideId);
+
+
+        fetch("https://localhost:5001/Turnir/Upisi_igraca/" + Naziv + "/" + FideId, {
+            method: 'PUT',
+            body: JSON.stringify({
+                "Naziv": Naziv,
+                "FideId": FideId
+            })
+        }).then(Response => {
+
+            let GlavnaForma = this.kont.querySelector(".GlavnaForma");
+            console.log(this.listaTurnira[0]);
+            this.prikaziTurnir(GlavnaForma, this.listaTurnira[0].naziv);
+
+        });
+    }
+
+    IscrtajKontroleTurnir_DodajKolo(host) {
+        this.removeAllChildNodes(host);
+        this.DodajHeader(host, "Kreiraj kolo:");
+
+        var PoljeKontrole = document.createElement("div");
+        PoljeKontrole.className = "IgracKontrole";
+        host.appendChild(PoljeKontrole);
+
+        var Kolo = document.createElement("div");
+        Kolo.className = "IgracKontrole";
+        PoljeKontrole.appendChild(Kolo);
+
+        var labelKolo = document.createElement("label");
+        labelKolo.className = "LabeleKontrole";
+        labelKolo.innerHTML = "Redni broj kola:";
+        Kolo.appendChild(labelKolo);
+
+        var inputKolo = document.createElement("select");
+        inputKolo.className = "LabeleKontrole";
+
+        let Kola = ["1", "2", "3", "4", "5"];
+
+        let Opcija;
+
+        let j = 1;
+
+        Kola.forEach(K => {
+
+            Opcija = document.createElement("option");
+            Opcija.innerHTML = K;
+            Opcija.value = j++;
+            inputKolo.appendChild(Opcija);
+        })
+
+        Kolo.appendChild(inputKolo);
+
+        // Dugmici
+
+        var Btns = document.createElement("div");
+        Btns.className = "Meni";
+        host.appendChild(Btns);
+
+        var Dodaj, Odustani;
+        var Dugmici = [Dodaj, Odustani];
+        var DugmiciLabele = ["Dodaj", "Odustani"];
+
+        var i = 0;
+
+        DugmiciLabele.forEach(D => {
+            Dugmici[i] = document.createElement("button");
+            Dugmici[i].innerHTML = D;
+            Dugmici[i].className = "DugmiciDodajOdustani";
+            Btns.appendChild(Dugmici[i]);
+
+            i++;
+        })
+
+        Dugmici[0].onclick = (ev) => {
+            if (inputKolo.value > this.listaTurnira[0].kolo)
+                alert("Mozete kreirati kolo broj " + this.listaTurnira[0].kolo + "!");
+
+            //this.Kreiraj_Kolo(host, inputFide.value);
+        }
+
+        Dugmici[1].onclick = (ev) => this.IscrtajKontrole_Izabrani_Turnir(host);
+
+        //Naoravi da kada se kreria kolo da mogu da se prikazu redom mecevi
+    }
+
+    //#endregion
 
 }

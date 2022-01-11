@@ -40,7 +40,7 @@ fetch("https://localhost:5001/Klub/Svi_klubovi")
                         p.json().then(Turniri => {
                             Turniri.forEach(T => {
                                 //console.log(T);
-                                var turnir = new Turnir(T.naziv, T.mesto, T.datum_pocetka, T.nagrada);
+                                var turnir = new Turnir(T.naziv, T.mesto, T.datum_pocetka, T.nagrada, T.klub_organizator, T.pobednik, T.sudija);
                                 ListaTurnira.push(turnir);
                                 //console.log(turnir);
                             });

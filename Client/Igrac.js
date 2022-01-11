@@ -4,7 +4,6 @@ export class Igrac {
         this.fide = fide;
         this.ime = ime;
         this.prezime = prezime;
-
         this.datum_rodj = new Date(datum_rodj);
         this.datum_rodj = this.datum_rodj.toLocaleDateString('en-UK');
         this.rejting = rejting;
@@ -19,7 +18,6 @@ export class Igrac {
 
         var el = document.createElement("td");
         el.innerHTML = this.fide;
-        el.className = "PoljeTabela";
         tr.appendChild(el);
 
         var el = document.createElement("td");
