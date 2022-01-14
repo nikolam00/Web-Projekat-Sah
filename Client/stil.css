@@ -159,3 +159,9 @@ table {
     margin-left: 200px;
     width: 100%;
 }
+
+.mecRezultat {
+    text-align: center;
+    table-layout: fixed;
+    border: 1px solid gray;
+}

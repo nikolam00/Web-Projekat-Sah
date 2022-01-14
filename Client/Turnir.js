@@ -11,7 +11,10 @@ export class Turnir {
         this.pobednik = pobednik;
         this.sudija = sudija;
 
+        this.kolo = 1;
+
         this.prijavljeni_Igraci = [];
+        this.Mecevi = [];
         this.ostali_Igraci = [];
     }
 
