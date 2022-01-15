@@ -1532,11 +1532,11 @@ export class Savez {
         this.DodajHeader(FormaPrikaz, "Turnir: " + NazivTurnira);
 
         this.listaTurnira = [];
-        this.listaIgraca = [];
+
 
         var turnir;
 
-        this.DodajHeader(FormaPrikaz, "Lista igraca");
+        this.DodajHeader(FormaPrikaz, "Lista prijavljenih igraca:");
 
         fetch("https://localhost:5001/Turnir/Pregledaj_turnir/" + NazivTurnira)
             .then(p => {
@@ -1556,7 +1556,7 @@ export class Savez {
 
                                 var player = new Igrac(I.fide, I.ime, I.prezime, I.datum_rodjenja, I.rejting, I.titula, I.klub);
                                 //console.log(player);
-                                this.listaIgraca.push(player);
+                                this.listaTurnira[0].prijavljeni_Igraci.push(player);
                             })
 
                             var IgraciTabela = document.createElement("table");
@@ -1581,7 +1581,7 @@ export class Savez {
                             IgraciBody.className = "IgraciPodaci";
                             IgraciTabela.appendChild(IgraciBody);
 
-                            this.listaIgraca.forEach(I => {
+                            this.listaTurnira[0].prijavljeni_Igraci.forEach(I => {
 
                                 //console.log(I);
                                 I.crtaj(IgraciTabela);
@@ -1620,6 +1620,7 @@ export class Savez {
 
         let GlavnaForma = document.querySelector(".GlavnaForma");
         btnsKontrole[2].onclick = (ev) => this.Iscrtaj_Turnir_Upisi_Rezultate(GlavnaForma);
+        btnsKontrole[3].onclick = (ev) => this.Proglasi_Pobednika(host);
     }
 
     IscrtajKontroleTurnir_UpisiIgraca(host) {
@@ -1762,7 +1763,7 @@ export class Savez {
 
             console.log(inputKolo.value);
 
-            if (inputKolo.value > this.listaTurnira[0].kolo)
+            if (inputKolo.value != this.listaTurnira[0].kolo)
                 alert("Mozete kreirati kolo broj " + this.listaTurnira[0].kolo + "!");
 
             console.log(this.listaTurnira[0].ostali_Igraci);
@@ -1784,7 +1785,7 @@ export class Savez {
         this.removeAllChildNodes(host);
 
         if (brKola == 1) {
-            this.listaTurnira[0].ostali_Igraci = this.listaIgraca;
+            this.listaTurnira[0].ostali_Igraci = this.listaTurnira[0].prijavljeni_Igraci;
         }
 
         if (this.listaTurnira[0].ostali_Igraci.length === 1)
@@ -1800,8 +1801,10 @@ export class Savez {
             })
         }).then(Response => {
 
-            let GlavnaForma = this.kont.querySelector(".GlavnaForma");
-            this.Iscrtaj_Turnir_Upisi_Rezultate(GlavnaForma);
+
+            var GlavnaForma = document.querySelector(".GlavnaForma");
+            debugger;
+            this.Prikazi_Ostale_Igrace(GlavnaForma);
         });
     }
 
@@ -1809,8 +1812,6 @@ export class Savez {
         this.removeAllChildNodes(host);
 
         // Deo za prikaz meceva
-
-        this.removeAllChildNodes(host);
 
         this.listaTurnira[0].Mecevi = [];
 
@@ -1912,14 +1913,200 @@ export class Savez {
                 "Naziv": this.listaTurnira[0].naziv,
                 "brKola": this.listaTurnira[0].kolo
             })
+        }).then(Response => {
+
+            this.listaTurnira[0].kolo = this.listaTurnira[0].kolo + 1;
+
+            let GlavnaForma = this.kont.querySelector(".GlavnaForma");
+            this.Prikazi_Ostale_Igrace(GlavnaForma);
         });
-
-        let FormaKontrole = this.kont.querySelector(".FormaKontrole");
-        this.listaTurnira[0].kolo = this.listaTurnira[0].kolo + 1;
-        this.IscrtajKontrole_Izabrani_Turnir(FormaKontrole);
-
     }
 
+    Prikazi_Ostale_Igrace(host) {
+
+        this.removeAllChildNodes(host);
+        this.listaTurnira[0].ostali_Igraci = [];
+
+        let FormaPrikaz = document.createElement("div");
+        FormaPrikaz.className = "FormaPrikaz";
+        host.appendChild(FormaPrikaz);
+
+        if (this.listaTurnira[0].kolo == 1) {
+            this.DodajHeader(FormaPrikaz, "Prijavljeni igraci");
+        } else {
+            this.DodajHeader(FormaPrikaz, "Ostali igraci nakon " + this.listaTurnira[0].kolo + ". kola:");
+        }
+        var FormaKontrole = document.createElement("div");
+        FormaKontrole.className = "FormaKontrole";
+        host.appendChild(FormaKontrole);
+
+        fetch("https://localhost:5001/Turnir/Ostali_igraci/" + this.listaTurnira[0].naziv)
+            .then(p => {
+                p.json().then(Igraci => {
+
+                    Igraci.forEach(I => {
+
+                        var player = new Igrac(I.fide, I.ime, I.prezime, I.datum_rodjenja, I.rejting, I.titula, I.klub);
+                        //console.log(player);
+                        this.listaTurnira[0].ostali_Igraci.push(player);
+                    })
+
+                    var IgraciTabela = document.createElement("table");
+                    IgraciTabela.className = "TabelaIgraci";
+                    FormaPrikaz.append(IgraciTabela);
+
+                    var IgraciHead = document.createElement("thead");
+                    IgraciTabela.appendChild(IgraciHead);
+
+                    var tr = document.createElement("tr");
+                    IgraciHead.appendChild(tr);
+
+                    let th;
+                    var Head = ["FIDE", "Ime", "Prezime", "Datum rodjenja", "Rejting", "Klub"];
+                    Head.forEach(el => {
+                        th = document.createElement("th");
+                        th.innerHTML = el;
+                        tr.appendChild(th);
+                    })
+
+                    var IgraciBody = document.createElement("tbody");
+                    IgraciBody.className = "IgraciPodaci";
+                    IgraciTabela.appendChild(IgraciBody);
+
+                    this.listaTurnira[0].ostali_Igraci.forEach(I => {
+
+                        //console.log(I);
+                        I.crtaj(IgraciTabela);
+                    })
+                })
+
+
+            })
+
+        this.DodajHeader(FormaKontrole, "Turnir:");
+
+        this.IscrtajKontrole_Rezultati(FormaKontrole);
+    }
+
+    IscrtajKontrole_Rezultati(host) {
+        this.removeAllChildNodes(host);
+
+        this.DodajHeader(host, "Tok turnira");
+
+        var Kontrole = ["Dodaj kolo", "Upisi rezultate kola", "Proglasi pobednika"];
+        var btnsKontrole = [];
+
+        Kontrole.forEach(K => {
+            var btn = document.createElement("button");
+            btn.innerHTML = K;
+            btn.className = "DugmiciKontrole";
+            btnsKontrole.push(btn);
+            host.appendChild(btn);
+        })
+
+
+        btnsKontrole[0].onclick = (ev) => this.IscrtajKontroleTurnir_DodajKolo(host);
+
+        let GlavnaForma = document.querySelector(".GlavnaForma");
+        btnsKontrole[1].onclick = (ev) => this.Iscrtaj_Turnir_Upisi_Rezultate(GlavnaForma);
+        btnsKontrole[2].onclick = (ev) => this.Proglasi_Pobednika(host);
+    }
+
+
+    Proglasi_Pobednika(host) {
+        this.removeAllChildNodes(host);
+
+        fetch("https://localhost:5001/Turnir/Proglasi_pobednika/" + this.listaTurnira[0].naziv, {
+            method: 'PUT',
+            body: JSON.stringify({
+                "Naziv": this.listaTurnira[0].naziv,
+            })
+        }).then(Response => {
+            this.DodajHeader(host, "Pobednik turnira " + this.listaTurnira[0].naziv + " je:");
+            debugger;
+            this.Prikazi_Pobednika(host, this.listaTurnira[0].pobednik.fide);
+            debugger;
+        });
+    }
+
+    Prikazi_Pobednika(host) {
+        this.removeAllChildNodes(host);
+
+        this.DodajHeader(host, "Igrac:");
+
+        // Kontrole
+
+        var PoljeKontrole = document.createElement("div");
+        PoljeKontrole.className = "IgracKontrole";
+        host.appendChild(PoljeKontrole);
+
+        var i = 0;
+
+        var Polja = ["Fide", "Ime", "Prezime", "Datum_Rodjenja", "Rejting", "Klub"];
+
+        var Fide, Ime, Prezime, Dat_rodjenja, Rejting, Klub;
+        var Divs = [Fide, Ime, Prezime, Dat_rodjenja, Rejting, Klub];
+
+        var lblFide, lblIme, lblPrezime, lblDatRodjenja, lblRejting, lblKlub;
+        var LabeleTekst = ["Fide:", "Ime:", "Prezime:", "Datum rodjenja:", "Rejting:", "Klub:"];
+        var Labeble = [lblFide, lblIme, lblPrezime, lblDatRodjenja, lblRejting, lblKlub];
+
+        var FidePrikaz, ImePrikaz, PrezimePrikaz, Dat_rodjenjaPrikaz, RejtingPrikaz, KlubPrikaz;
+        var Prikaz = [FidePrikaz, ImePrikaz, PrezimePrikaz, Dat_rodjenjaPrikaz, RejtingPrikaz, KlubPrikaz];
+
+        //---------------------------------------------------------------------------------------------------------
+
+        Polja.forEach(D => {
+
+            Divs[i] = document.createElement("div");
+            Divs[i].className = "IgracKontrole";
+            PoljeKontrole.appendChild(Divs[i]);
+
+            Labeble[i] = document.createElement("label");
+            Labeble[i].className = "LabeleKontrole";
+            Labeble[i].innerHTML = LabeleTekst[i];
+            Divs[i].appendChild(Labeble[i]);
+
+            Prikaz[i] = document.createElement("label");
+            Prikaz[i].className = "LabeleKontrole";
+            Divs[i].appendChild(Prikaz[i]);
+
+            i++;
+        })
+
+        // Fetch
+
+        fetch("https://localhost:5001/Igrac/Pregledaj_igraca/" + FideID)
+            .then(p => {
+                p.json().then(I => {
+
+                    //console.log(I);
+
+                    Prikaz[0].innerHTML = I.fide;
+                    Prikaz[1].innerHTML = I.ime;
+                    Prikaz[2].innerHTML = I.prezime;
+                    var datum_rodj = new Date(I.datum_rodjenja);
+                    datum_rodj = datum_rodj.toLocaleDateString('en-UK');
+                    Prikaz[3].innerHTML = datum_rodj;
+                    Prikaz[4].innerHTML = I.rejting;
+                    Prikaz[5].innerHTML = I.klub.naziv;
+                })
+            })
+
+        // Dugme Zatvori
+
+        var Btns = document.createElement("div");
+        Btns.className = "Meni";
+        host.appendChild(Btns);
+
+        var Zatvori = document.createElement("button");
+        Zatvori.innerHTML = "Zatvori";
+        Zatvori.className = " Zatvori"
+        Btns.appendChild(Zatvori);
+
+        let GlavnaForma = document.querySelector(".GlavnaForma");
+        Zatvori.onclick = (ev) => this.prikaziTurnire(GlavnaForma);
+    }
 
 
 

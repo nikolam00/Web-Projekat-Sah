@@ -124,6 +124,21 @@ namespace Web_Projekat_Sah.Controllers
             return Ok(Turnir.Prijavljeni_igraci.ToList());
         }
 
+        [Route("Ostali_igraci/{Naziv}")]
+        [HttpGet]
+        public ActionResult Ostali_igraci(string Naziv)
+        {
+            if (Naziv == "") return BadRequest("Morate uneti ime turnira!");
+            if (Naziv.Length > 50) return BadRequest("Pogresna duzina naziv!");
+
+            var Turnir=Context.Turniri
+            .Include(p=>p.Ostali_igraci)
+            .ThenInclude(p=>p.Klub)
+            .Where(p=>p.Naziv.CompareTo(Naziv)==0).FirstOrDefault();
+
+            return Ok(Turnir.Ostali_igraci.ToList());
+        }
+
         [Route("Pogledaj_kolo/{Naziv}/{BrKola}")]
         [HttpGet]
         public ActionResult Vrati_kolo(string Naziv,int BrKola)
