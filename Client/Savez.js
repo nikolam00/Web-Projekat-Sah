@@ -2012,7 +2012,6 @@ export class Savez {
         btnsKontrole[2].onclick = (ev) => this.Proglasi_Pobednika(host);
     }
 
-
     Proglasi_Pobednika(host) {
         this.removeAllChildNodes(host);
 
@@ -2029,7 +2028,7 @@ export class Savez {
         });
     }
 
-    Prikazi_Pobednika(host) {
+    Prikazi_Pobednika(host, FideID) {
         this.removeAllChildNodes(host);
 
         this.DodajHeader(host, "Igrac:");
@@ -2097,7 +2096,7 @@ export class Savez {
 
         var Btns = document.createElement("div");
         Btns.className = "Meni";
-        host.appendChild(Btns);
+        PoljeKontrole.appendChild(Btns);
 
         var Zatvori = document.createElement("button");
         Zatvori.innerHTML = "Zatvori";
@@ -2107,8 +2106,6 @@ export class Savez {
         let GlavnaForma = document.querySelector(".GlavnaForma");
         Zatvori.onclick = (ev) => this.prikaziTurnire(GlavnaForma);
     }
-
-
 
     //#endregion
 
