@@ -2152,9 +2152,9 @@ export class Savez {
 
         var Rezultati = [];
 
-        console.log(document.querySelectorAll(".mecRezultat"));
+        console.log(this.kont.querySelectorAll(".mecRezultat"));
 
-        document.querySelectorAll(".mecRezultat").forEach(R => {
+        this.kont.querySelectorAll(".mecRezultat").forEach(R => {
             console.log(R);
             Rezultati.push(R.value);
         });

@@ -19,6 +19,6 @@ SSJO.CrtajNaslovnu_Stranu(document.body);
 
 var SSNO = new Savez("Sahovski savez Nisavskog okruga", ListaIgraca, ListaKlubova, ListaTurnira, ListaSudija, ListaMeceva);
 
-//SSNO.CrtajNaslovnu_Stranu(document.body);
+SSNO.CrtajNaslovnu_Stranu(document.body);
 
 //console.log(SSJO);

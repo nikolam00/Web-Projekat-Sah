@@ -312,7 +312,8 @@ h2 {
 .Zatvori:hover,
 .Prikazi:hover,
 .DugmePregledaj:hover,
-.btnSacuvaj:hover {
+.btnSacuvaj:hover,
+.btnDodajTurnir:hover {
     background-color: #8b5027;
     border-color: brown;
 }
