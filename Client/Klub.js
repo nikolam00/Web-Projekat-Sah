@@ -13,7 +13,7 @@ export class Klub {
         var tr = document.createElement("tr");
         host.appendChild(tr);
 
-        var Elementi = [this.id, this.naziv, this.mesto, this.br_Tel, this.br_Igraca];
+        var Elementi = [this.naziv, this.mesto, this.br_Tel, this.br_Igraca];
 
         Elementi.forEach(E => {
             var el = document.createElement("td");

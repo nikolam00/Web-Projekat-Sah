@@ -20,7 +20,10 @@ export class Sudija {
         tr.appendChild(el);
 
         var el = document.createElement("td");
-        el.innerHTML = this.kategorija;
+        if (this.kategorija == 0) {
+            el.innerHTML = "Nacionalni";
+        } else
+            el.innerHTML = "Internacionalni";
         tr.appendChild(el);
     }
 }

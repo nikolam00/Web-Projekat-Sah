@@ -20,9 +20,11 @@ export class Turnir {
 
     crtaj(host) {
         var tr = document.createElement("tr");
+        tr.className = "RedTurnir";
         host.appendChild(tr);
 
         var el = document.createElement("td");
+        el.className = "NazivTurnira";
         el.innerHTML = this.naziv;
         tr.appendChild(el);
 

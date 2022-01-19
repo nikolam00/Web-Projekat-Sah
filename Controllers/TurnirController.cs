@@ -26,9 +26,9 @@ namespace Web_Projekat_Sah.Controllers
 
         //              POST METODE
 
-        [Route("Unos_turnira/{Naziv}/{Klub_organizator}/{Pocetak}/{Mesto}/{Broj_Telefona}/{Nagrada}/{Sudija_ID}")]
+        [Route("Unos_turnira/{Naziv}/{Klub_organizator}/{Pocetak}/{Mesto}/{Nagrada}/{SudijaIme}/{SudijaPrezime}")]
         [HttpPost]
-        public async Task<ActionResult> Dodaj_turnir(string Naziv, string Klub_organizator, int Sudija_ID, DateTime Pocetak, string Mesto, int Nagrada)
+        public async Task<ActionResult> Dodaj_turnir(string Naziv, string Klub_organizator, DateTime Pocetak, string Mesto, int Nagrada,string SudijaIme,string SudijaPrezime)
         {
             if (Naziv == "") return BadRequest("Morate uneti ime turnira");
             if (Naziv.Length > 50) return BadRequest("Pogresna duzina naziv!");
@@ -47,7 +47,7 @@ namespace Web_Projekat_Sah.Controllers
                 return BadRequest("Klub sa ovim imenom ne postoji!");
             }
 
-            var Arbitar=Context.Sudije.Where(p=>p.SudijaID==Sudija_ID).FirstOrDefault();
+            var Arbitar=Context.Sudije.Where(p=>p.Ime.CompareTo(SudijaIme)==0 && p.Prezime.CompareTo(SudijaPrezime)==0).FirstOrDefault();
 
             if (Arbitar == null)
             {

@@ -98,7 +98,12 @@ namespace Web_Projekat_Sah.Controllers
             if (Prezime == "") return BadRequest("Morate uneti prezime sudije");
             if (Prezime.Length > 20) return BadRequest("Pogresna duzina!");
 
-            var Sudija = Context.Sudije.Include(p=>p.Sudjeni_turniri).Where(p => p.Ime.CompareTo(Ime) == 0 && p.Prezime.CompareTo(Prezime) == 0).FirstOrDefault();
+            var Sudija = Context.Sudije
+                                .Include(p=>p.Sudjeni_turniri)
+                                .ThenInclude(p=>p.Klub_organizator)
+                                .Include(p=>p.Sudjeni_turniri)
+                                .ThenInclude(p=>p.Pobednik)
+                                .Where(p => p.Ime.CompareTo(Ime) == 0 && p.Prezime.CompareTo(Prezime) == 0).FirstOrDefault();
 
             return Ok(Sudija.Sudjeni_turniri.ToList());
         }
@@ -107,7 +112,7 @@ namespace Web_Projekat_Sah.Controllers
 
         //              DELETE METODE
 
-        [Route("Brisanje_sudije/{FideId}")]
+        [Route("Brisanje_sudije/{Ime}/{Prezime}")]
         [HttpDelete]
         public async Task<ActionResult> Izbrisi_sudiju(string Ime, string Prezime)
         {

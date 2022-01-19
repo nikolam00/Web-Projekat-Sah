@@ -1,5 +1,14 @@
 /* Deo za prikaz zaglavlja*/
 
+body {
+    justify-content: stretch;
+    align-self: stretch;
+    background-image: url("Sah.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: blanchedalmond;
+}
+
 .NaslovLabel {
     font-size: 50px;
     font-style: italic;
@@ -46,19 +55,21 @@
 .Meni {
     width: 100%;
     height: 100%;
-    justify-content: space-between;
+    justify-content: space-evenly;
     display: flex;
+    flex-wrap: wrap;
 }
 
-.Dugmici {
-    color: blue;
-    font-size: 20px;
-    font-weight: bold;
+.TabelaIgraci {
     width: 100%;
     height: 100%;
 }
 
-.TabelaIgraci {
+tr:hover {
+    background-color: #cd8350;
+}
+
+.TabelaTurniri {
     width: 100%;
     height: 100%;
 }
@@ -83,42 +94,75 @@ tr,
 th,
 td {
     text-align: center;
+    font-size: 18px;
     table-layout: fixed;
-    border: 1px solid gray;
+    border: 2px solid brown;
 }
 
 table {
     border-collapse: collapse;
+    background-color: rgb(241, 203, 156);
 }
 
 .GlavnaForma {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
     flex-direction: row;
-}
-
-.FormaKontrole {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    float: right;
-    align-items: center;
     width: 100%;
     height: 100%;
 }
 
+.FormaKontrole {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 20%;
+    height: 100%;
+    margin-right: 10px;
+}
+
 .FormaPrikaz {
     float: left;
-    width: 3000px;
+    width: 75%;
     height: 100%;
     margin-right: 20px;
+    margin-left: 10px;
+}
+
+.FormaPrikazTurniri {
+    float: left;
+    width: 100%;
+    height: 100%;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .LabeleKontrole {
-    font-size: 15px;
-    color: darkblue;
+    font-size: 18px;
+    font-weight: bold;
+    font-style: italic;
+    color: #2b1d14;
     margin-right: 20px;
     margin-bottom: 20px;
+    float: left;
+}
+
+.LabeleKontrolePrikaziIgraca {
+    font-size: 18px;
+    font-weight: bold;
+    font-style: italic;
+    color: #2b1d14;
+    margin-right: 20px;
+    margin-bottom: 30px;
+}
+
+h2 {
+    font-size: 18px;
+    font-weight: bold;
+    font-style: italic;
+    color: #2b1d14;
 }
 
 .InputKontrole {
@@ -127,8 +171,16 @@ table {
 }
 
 .DugmiciKontrole {
-    margin-bottom: 20px;
-    width: 50%;
+    margin-bottom: 30px;
+    width: fit-content;
+    font-size: 18px;
+    background-color: rgb(250, 215, 160);
+    border-color: brown;
+}
+
+.DugmiciKontrole:hover {
+    background-color: #8b5027;
+    border-color: brown;
 }
 
 .DugmiciDodajOdustani {
@@ -140,11 +192,24 @@ table {
     width: 50%;
 }
 
+.IgracKontole {
+    width: 100%;
+    height: 100%;
+}
+
+.IgracKontrolePrikaz {
+    margin-bottom: px;
+}
+
 .Zatvori {
-    color: blue;
+    font-family: 'Times New Roman';
+    width: fit-content;
+    background-color: rgb(250, 215, 160);
+    border-color: brown;
     font-size: 20px;
     font-weight: bold;
     height: 100%;
+    margin-top: 30px;
     margin-right: 100px;
     margin-left: 100px;
     width: 100%;
@@ -160,8 +225,124 @@ table {
     width: 100%;
 }
 
+.btnSacuvaj {
+    font-family: 'Times New Roman';
+    width: fit-content;
+    font-size: 20px;
+    background-color: rgb(250, 215, 160);
+    border-color: brown;
+}
+
 .mecRezultat {
     text-align: center;
     table-layout: fixed;
     border: 1px solid gray;
+}
+
+.RedTurnir {
+    text-align: center;
+    table-layout: fixed;
+    border: 1px solid gray;
+}
+
+.NazivTurnira {
+    text-align: center;
+}
+
+.FormaPrikazTurniri {
+    display: flex;
+    flex-direction: column;
+}
+
+.btnDodajTurnir {
+    float: right;
+    width: fit-content;
+    font-size: 25px;
+    background-color: rgb(250, 215, 160);
+    border-color: brown;
+}
+
+.divDodajTurnir {
+    margin-bottom: 10px;
+}
+
+
+/*---------------------------------------------------------------------------------*/
+
+.Dugmici {
+    color: blue;
+    font-size: 20px;
+    font-weight: bold;
+    width: 100%;
+    height: 100%;
+}
+
+.DugmiciMeni {
+    color: brown;
+    background-color: burlywood;
+    width: fit-content;
+    height: 100%;
+    margin-right: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    border-color: brown;
+    border-width: 2px;
+    border-radius: 15px;
+    border-style: solid;
+}
+
+.Pretrazi,
+.Dodaj,
+.Odustani,
+.Promeni,
+.Obrisi,
+.Prikazi {
+    font-family: 'Times New Roman';
+    width: fit-content;
+    font-size: 20px;
+    background-color: rgb(250, 215, 160);
+    border-color: brown;
+}
+
+.Pretrazi:hover,
+.Dodaj:hover,
+.Odustani:hover,
+.Promeni:hover,
+.Obrisi:hover,
+.Zatvori:hover,
+.Prikazi:hover,
+.DugmePregledaj:hover,
+.btnSacuvaj:hover {
+    background-color: #8b5027;
+    border-color: brown;
+}
+
+.DugmePregledaj {
+    font-family: 'Times New Roman';
+    width: fit-content;
+    font-size: 20px;
+    background-color: rgb(250, 215, 160);
+    color: darkblue;
+    border-color: darkblue;
+}
+
+input[type=text] {
+    border: 2px solid brown;
+    background-color: rgb(241, 203, 156);
+    border-radius: 4px;
+    float: right;
+}
+
+input[type=date] {
+    border: 2px solid brown;
+    background-color: rgb(241, 203, 156);
+    border-radius: 4px;
+    float: right;
+}
+
+select {
+    border: 2px solid brown;
+    background-color: rgb(241, 203, 156);
+    border-radius: 4px;
+    margin-right: 50px;
 }
